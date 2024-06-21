@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import ProfileEdit from "@/components/ProfileEdit";
 import { useUser } from "@clerk/clerk-react";
 import { Profile } from "@prisma/client";
+import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function ProfilePage() {
@@ -40,7 +41,17 @@ export default function ProfilePage() {
     fetchUser();
   }, [user]);
 
-  if (!user) return <div>Not signed in</div>;
+  if (!isLoaded)
+    return (
+      <div className="flex justify-center items-center h-screen w-screen">
+        <Loader2 className="animate-spin" />
+      </div>
+    );
+
+  if (!isSignedIn && isLoaded) {
+    window.location.href = "/";
+    return null;
+  }
 
   return (
     <>

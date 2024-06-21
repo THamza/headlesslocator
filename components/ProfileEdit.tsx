@@ -10,7 +10,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2, MapPinIcon } from "lucide-react";
+import { Loader2, MapPinIcon, Search, SearchIcon } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -31,8 +31,15 @@ type ProfileEditProps = {
   profile: Profile | null;
 };
 
+const LONDON_COORDS = { lat: 51.505, lng: -0.09 };
+
 export default function ProfileEdit({ profile }: ProfileEditProps) {
   const [isUpdateLoading, setIsUpdateLoading] = useState(false);
+  const [isAddressSearchLoading, setIsAddressSearchLoading] = useState(false);
+  const [position, setPosition] = useState({
+    lat: profile?.latitude || LONDON_COORDS.lat,
+    lng: profile?.longitude || LONDON_COORDS.lng,
+  });
   const [formData, setFormData] = useState<PartialProfile>({
     email: profile?.email || "",
     firstName: profile?.firstName || "",
@@ -40,21 +47,32 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
     telegram: profile?.telegram || "",
     interests: profile?.interests || "",
     address: profile?.address || "",
+    latitude: position.lat,
+    longitude: position.lng,
   });
-  // const LMap = useMemo(
-  //   () =>
-  //     dynamic(() => import("@/components/LeafletMap"), {
-  //       loading: () => <p>A map is loading</p>,
-  //       ssr: false,
-  //     }),
-  //   []
-  // );
 
   useEffect(() => {
     if (profile) {
       setFormData(profile);
     }
   }, [profile]);
+
+  // useEffect(() => {
+  //   // Get the device's current location
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       (position) => {
+  //         setPosition({
+  //           lat: position.coords.latitude,
+  //           lng: position.coords.longitude,
+  //         });
+  //       },
+  //       (error) => {
+  //         console.error("Error retrieving device location: ", error);
+  //       }
+  //     );
+  //   }
+  // }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -66,9 +84,32 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
     setFormData({ ...formData, interests: value });
   };
 
+  const handleAddressSearch = async () => {
+    if (!formData.address) return;
+    setIsAddressSearchLoading(true);
+
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/search?q=${formData.address}&format=json`
+    );
+    const data = await response.json();
+    setIsAddressSearchLoading(false);
+    if (data && data.length > 0) {
+      const { lat, lon } = data[0];
+      setPosition({ lat: parseFloat(lat), lng: parseFloat(lon) });
+    } else {
+      toast({
+        title: "Address not found",
+        description: "Could not find the address. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setIsUpdateLoading(true);
+    formData.latitude = position.lat;
+    formData.longitude = position.lng;
 
     const res = await fetch(`/api/profile/${profile?.clerkId}`, {
       method: "POST",
@@ -165,24 +206,36 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
           <div className="grid w-full gap-1.5">
             <Label htmlFor="address">Address</Label>
             <div className="relative">
-              <Input
-                id="address"
-                name="address"
-                placeholder="Enter your address"
-                value={formData.address || ""}
-                onChange={handleChange}
-              />
-              <Button
-                variant="outline"
-                size="icon"
-                className="absolute right-2 top-2"
-              >
-                <MapPinIcon className="w-5 h-5" />
-              </Button>
+              <div className="flex flex-row items-center gap-1.5">
+                <div className="w-full">
+                  <Input
+                    id="address"
+                    name="address"
+                    placeholder="Enter your address"
+                    value={formData.address || ""}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={handleAddressSearch}
+                    disabled={isAddressSearchLoading}
+                  >
+                    {isAddressSearchLoading ? (
+                      <Loader2 className="animate-spin" />
+                    ) : (
+                      <SearchIcon />
+                    )}
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
           <div className="h-96 w-full">
-            <LeafletMap position={{ lat: 51.505, lng: -0.09 }} zoom={13} />
+            <LeafletMap position={position} zoom={13} />
           </div>
         </CardContent>
         <CardFooter>
@@ -191,7 +244,11 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
             className="w-full bg-black text-white hover:bg-gray-800"
             disabled={isUpdateLoading}
           >
-            {isUpdateLoading ? <Loader2 /> : "Update Profile"}
+            {isUpdateLoading ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              "Update Profile"
+            )}
           </Button>
         </CardFooter>
       </form>
