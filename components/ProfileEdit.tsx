@@ -10,7 +10,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2, MapPinIcon, Search, SearchIcon } from "lucide-react";
+import { Loader2, MapPinIcon, SearchIcon } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -57,23 +57,6 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
     }
   }, [profile]);
 
-  // useEffect(() => {
-  //   // Get the device's current location
-  //   if (navigator.geolocation) {
-  //     navigator.geolocation.getCurrentPosition(
-  //       (position) => {
-  //         setPosition({
-  //           lat: position.coords.latitude,
-  //           lng: position.coords.longitude,
-  //         });
-  //       },
-  //       (error) => {
-  //         console.error("Error retrieving device location: ", error);
-  //       }
-  //     );
-  //   }
-  // }, []);
-
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -103,6 +86,10 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
         variant: "destructive",
       });
     }
+  };
+
+  const handleMarkerDragEnd = (latlng: { lat: number; lng: number }) => {
+    setPosition({ lat: latlng.lat, lng: latlng.lng });
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -235,7 +222,11 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
             </div>
           </div>
           <div className="h-96 w-full">
-            <LeafletMap position={position} zoom={13} />
+            <LeafletMap
+              position={position}
+              zoom={13}
+              onMarkerDragEnd={handleMarkerDragEnd}
+            />
           </div>
         </CardContent>
         <CardFooter>

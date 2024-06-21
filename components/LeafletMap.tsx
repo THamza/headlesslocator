@@ -1,12 +1,5 @@
 import { useEffect } from "react";
-import {
-  MapContainer,
-  Marker,
-  Popup,
-  TileLayer,
-  Tooltip,
-  useMap,
-} from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
@@ -20,7 +13,7 @@ function ChangeView({ center }: any) {
 }
 
 export default function LeafletMap(props: any) {
-  const { position, zoom } = props;
+  const { position, zoom, onMarkerDragEnd } = props;
 
   return (
     <MapContainer
@@ -34,7 +27,16 @@ export default function LeafletMap(props: any) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <ChangeView center={position} />
-      <Marker position={position}>
+      <Marker
+        position={position}
+        draggable={true}
+        eventHandlers={{
+          dragend: (event) => {
+            const latlng = event.target.getLatLng();
+            onMarkerDragEnd(latlng);
+          },
+        }}
+      >
         <Popup>
           A pretty CSS3 popup. <br /> Easily customizable.
         </Popup>
