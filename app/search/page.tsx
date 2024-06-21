@@ -4,7 +4,9 @@ import { useUser } from "@clerk/nextjs";
 import axios from "axios";
 import dynamic from "next/dynamic";
 
-const Map = dynamic(() => import("../../components/Map"), { ssr: false });
+const Map = dynamic(() => import("../../components/LeafletMap"), {
+  ssr: false,
+});
 
 export default function SearchPage() {
   const { isSignedIn, user } = useUser();

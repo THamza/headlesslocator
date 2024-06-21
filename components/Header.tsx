@@ -13,14 +13,18 @@ import {
   SignUpButton,
   UserButton,
 } from "@clerk/nextjs";
-import { JSX, SVGProps } from "react";
 import Image from "next/image";
+import { Roboto } from "next/font/google";
+
+const roboto = Roboto({
+  weight: "700",
+  subsets: ["latin"],
+});
 
 export default function Header() {
   return (
-    <header className="flex items-center justify-between bg-primary px-4 py-3 shadow-sm">
-      <div className="flex items-center gap-8">
-        {/* open in a new tab */}
+    <header className="flex items-center justify-between bg-primary px-4 py-3 shadow-sm bg-white">
+      <div className="flex items-center">
         <Link href="https://headless.org/" prefetch={false} target="_blank">
           <Image
             src="/theheadlessway.png"
@@ -29,8 +33,12 @@ export default function Header() {
             height={60}
           />
         </Link>
-        <div className="text-lg font-semibold text-primary-foreground mr-8">
-          <Link href="/">Community Locator</Link>
+        <div className="text-lg  mr-8">
+          <Link href="/">
+            <p style={{ fontFamily: roboto.style.fontFamily }}>
+              Community Locator
+            </p>
+          </Link>
         </div>
         <SignedIn>
           <NavigationMenu className="text-muted-foreground">
