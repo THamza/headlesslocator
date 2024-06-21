@@ -1,3 +1,4 @@
+"use client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
@@ -9,8 +10,9 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-import { JSX, SVGProps } from "react";
+import { JSX, SVGProps, useMemo } from "react";
 import Header from "@/components/Header";
+import LeafletMap from "@/components/LeafletMap";
 
 export default function MapPage() {
   return (
@@ -35,7 +37,9 @@ export default function MapPage() {
               </CardContent>
             </Card>
           </div>
-          <div className="h-full w-full" />
+          <div className="h-full w-full">
+            <LeafletMap position={{ lat: 51.505, lng: -0.09 }} zoom={13} />
+          </div>
         </div>
         <div className="border-l bg-muted/40 px-4 py-6">
           <div className="flex items-center justify-between">

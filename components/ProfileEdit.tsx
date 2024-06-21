@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Card,
   CardHeader,
@@ -22,6 +22,8 @@ import {
 } from "@/components/ui/select";
 import { Profile } from "@prisma/client";
 import { toast } from "./ui/use-toast";
+import dynamic from "next/dynamic";
+import LeafletMap from "./LeafletMap";
 
 type PartialProfile = Partial<Profile>;
 
@@ -39,6 +41,14 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
     interests: profile?.interests || "",
     address: profile?.address || "",
   });
+  // const LMap = useMemo(
+  //   () =>
+  //     dynamic(() => import("@/components/LeafletMap"), {
+  //       loading: () => <p>A map is loading</p>,
+  //       ssr: false,
+  //     }),
+  //   []
+  // );
 
   useEffect(() => {
     if (profile) {
@@ -170,6 +180,9 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
                 <MapPinIcon className="w-5 h-5" />
               </Button>
             </div>
+          </div>
+          <div className="h-96 w-full">
+            <LeafletMap position={{ lat: 51.505, lng: -0.09 }} zoom={13} />
           </div>
         </CardContent>
         <CardFooter>
