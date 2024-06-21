@@ -123,10 +123,15 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
     }
   };
 
-  if (!profile) return <div>Loading...</div>;
+  if (!profile)
+    return (
+      <div>
+        <Loader2 className="animate-spin" />
+      </div>
+    );
 
   return (
-    <Card className="w-full max-w-2xl">
+    <Card className="w-full max-w-2xl shadow-lg">
       <CardHeader>
         <CardTitle>Profile Setup</CardTitle>
         <CardDescription>

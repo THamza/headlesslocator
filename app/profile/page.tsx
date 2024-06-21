@@ -57,7 +57,11 @@ export default function ProfilePage() {
     <>
       <Header />
       <main className="flex justify-center p-8">
-        {isProfileFetchLoading && <div>Loading...</div>}
+        {isProfileFetchLoading && (
+          <div className="flex justify-center items-center h-screen w-screen">
+            <Loader2 className="animate-spin" />
+          </div>
+        )}
 
         {isLoaded && !isProfileFetchLoading && (
           <ProfileEdit profile={profile} />
