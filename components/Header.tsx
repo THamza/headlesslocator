@@ -14,33 +14,35 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import { JSX, SVGProps } from "react";
+import Image from "next/image";
 
 export default function Header() {
   return (
     <header className="flex items-center justify-between bg-primary px-4 py-3 shadow-sm">
-      <div className="flex items-center gap-4">
-        <Link href="#" prefetch={false}>
-          <MountainIcon className="h-6 w-6 text-primary-foreground" />
+      <div className="flex items-center gap-8">
+        {/* open in a new tab */}
+        <Link href="https://headless.org/" prefetch={false} target="_blank">
+          <Image
+            src="/theheadlessway.png"
+            alt="Community Locator"
+            width={60}
+            height={60}
+          />
         </Link>
-        <div className="text-lg font-semibold text-primary-foreground">
+        <div className="text-lg font-semibold text-primary-foreground mr-8">
           <Link href="/">Community Locator</Link>
         </div>
         <SignedIn>
           <NavigationMenu className="text-muted-foreground">
             <NavigationMenuList>
-              <NavigationMenuItem>
+              <NavigationMenuItem className="mr-8">
                 <NavigationMenuLink asChild>
-                  <Link href="/profile">My information</Link>
+                  <Link href="/profile">Profile</Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <NavigationMenuLink asChild>
-                  <Link href="/map">Map view</Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link href="https://headless.org/">The Headless Way</Link>
+                  <Link href="/map">Community</Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
             </NavigationMenuList>
@@ -69,26 +71,5 @@ export default function Header() {
         </div>
       </div>
     </header>
-  );
-}
-
-function MountainIcon(
-  props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>
-) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m8 3 4 8 5-5 5 15H2L8 3z" />
-    </svg>
   );
 }

@@ -134,25 +134,6 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
             />
           </div>
           <div className="grid w-full gap-1.5">
-            <Label htmlFor="address">Address</Label>
-            <div className="relative">
-              <Input
-                id="address"
-                name="address"
-                placeholder="Enter your address"
-                value={formData.address || ""}
-                onChange={handleChange}
-              />
-              <Button
-                variant="outline"
-                size="icon"
-                className="absolute right-2 top-2"
-              >
-                <MapPinIcon className="w-5 h-5" />
-              </Button>
-            </div>
-          </div>
-          <div className="grid w-full gap-1.5">
             <Label htmlFor="interests">Interests</Label>
             <Select
               value={formData.interests || ""}
@@ -171,9 +152,32 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
               </SelectContent>
             </Select>
           </div>
+          <div className="grid w-full gap-1.5">
+            <Label htmlFor="address">Address</Label>
+            <div className="relative">
+              <Input
+                id="address"
+                name="address"
+                placeholder="Enter your address"
+                value={formData.address || ""}
+                onChange={handleChange}
+              />
+              <Button
+                variant="outline"
+                size="icon"
+                className="absolute right-2 top-2"
+              >
+                <MapPinIcon className="w-5 h-5" />
+              </Button>
+            </div>
+          </div>
         </CardContent>
         <CardFooter>
-          <Button type="submit" className="w-full" disabled={isUpdateLoading}>
+          <Button
+            type="submit"
+            className="w-full bg-black text-white hover:bg-gray-800"
+            disabled={isUpdateLoading}
+          >
             {isUpdateLoading ? <Loader2 /> : "Update Profile"}
           </Button>
         </CardFooter>
