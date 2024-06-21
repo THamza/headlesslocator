@@ -38,7 +38,8 @@ export default function LeafletMap(props: any) {
         }}
       >
         <Popup>
-          A pretty CSS3 popup. <br /> Easily customizable.
+          Your location <br /> {position.lat.toFixed(3)},{" "}
+          {position.lng.toFixed(3)}
         </Popup>
       </Marker>
     </MapContainer>
