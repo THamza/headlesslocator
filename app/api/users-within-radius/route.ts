@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Profile } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
   const allUsers = await prisma.profile.findMany();
 
   // Filter users within the radius using the Haversine formula
-  const usersWithinRadius = allUsers.filter((user): any => {
+  const usersWithinRadius = allUsers.filter((user: Profile) => {
     const distance = haversineDistance(
       latitude,
       longitude,
