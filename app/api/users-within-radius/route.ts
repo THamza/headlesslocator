@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
   const allUsers = await prisma.profile.findMany();
 
   // Filter users within the radius using the Haversine formula
-  const usersWithinRadius = allUsers.filter((user) => {
+  const usersWithinRadius = allUsers.filter((user): any => {
     const distance = haversineDistance(
       latitude,
       longitude,
