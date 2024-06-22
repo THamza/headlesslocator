@@ -4,12 +4,15 @@ import ProfileEdit from "@/components/ProfileEdit";
 import { useUser } from "@clerk/clerk-react";
 import { Profile } from "@prisma/client";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+
 import { useEffect, useState } from "react";
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isProfileFetchLoading, setIsProfileFetchLoading] = useState(false);
   const { isSignedIn, user, isLoaded } = useUser();
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchUser() {
@@ -49,7 +52,8 @@ export default function ProfilePage() {
     );
 
   if (!isSignedIn && isLoaded) {
-    window.location.href = "/";
+    // window.location.href = "/";
+    router.push("/");
     return null;
   }
 

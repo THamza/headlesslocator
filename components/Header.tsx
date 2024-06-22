@@ -29,11 +29,11 @@ export default function Header() {
           <Image
             src="/theheadlessway.png"
             alt="Community Locator"
-            width={60}
-            height={60}
+            width={35}
+            height={35}
           />
         </Link>
-        <div className="text-lg  mr-8">
+        <div className="text-lg  mr-12 ml-3">
           <Link href="/">
             <p style={{ fontFamily: roboto.style.fontFamily }}>
               Community Locator

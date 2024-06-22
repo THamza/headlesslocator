@@ -98,7 +98,8 @@ export default function MapPage() {
   }
 
   if (!isSignedIn && isLoaded) {
-    window.location.href = "/";
+    // window.location.href = "/";
+    router.push("/");
     return null;
   }
 
