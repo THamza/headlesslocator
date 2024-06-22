@@ -15,9 +15,10 @@ import {
 import LeafletMap from "@/components/LeafletMap";
 import { toast } from "@/components/ui/use-toast";
 import { CSVLink } from "react-csv";
-import { Loader2, MapPin } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useUser } from "@clerk/clerk-react";
 import { useRouter } from "next/navigation";
+import { Switch } from "@/components/ui/switch";
 
 type User = {
   id: string;
@@ -27,6 +28,7 @@ type User = {
   telegram: string;
   latitude: number;
   longitude: number;
+  interests: string;
 };
 
 export default function MapPage() {
@@ -37,6 +39,7 @@ export default function MapPage() {
   const [radius, setRadius] = useState(5);
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [unit, setUnit] = useState("km");
   const { isSignedIn, user, isLoaded } = useUser();
   const router = useRouter();
 
@@ -55,7 +58,6 @@ export default function MapPage() {
           toast({
             title: "Could not find your profile information",
             description: "Please update your profile first",
-            // variant: "destructive",
           });
           router.push("/profile");
         }
@@ -98,52 +100,64 @@ export default function MapPage() {
   }
 
   if (!isSignedIn && isLoaded) {
-    // window.location.href = "/";
     router.push("/");
     return null;
   }
 
+  const convertedRadius = unit === "km" ? radius : radius * 0.621371; // 1 Km = 0.621371 Miles
+
   return (
     <div>
       <Header />
-      <div className="grid min-h-screen w-full grid-cols-[1fr_500px]">
+      <div className="grid min-h-screen w-full grid-cols-[1fr_600px]">
         <div className="relative">
           <div className="absolute top-4 right-4 z-[1000]">
-            {" "}
-            {/* Ensure high z-index */}
             <Card className="w-[300px] bg-white">
-              <CardContent className="flex items-center gap-4">
-                <div className="flex-1">
-                  <div className="font-medium mt-4 mb-4">Radius</div>
-                  <Slider
-                    min={0}
-                    max={20}
-                    step={0.2}
-                    defaultValue={[5]}
-                    value={[radius]}
-                    onValueChange={([value]) => setRadius(value)}
-                    className="h-2 w-full mb-2"
-                  />
-                  <Button
-                    onClick={handleApply}
-                    className="mt-2 w-full bg-black text-white hover:bg-gray-800"
-                  >
-                    Apply
-                  </Button>
+              <CardContent className="flex flex-col items-center gap-4">
+                <div className="flex items-center justify-between w-full mt-4">
+                  <span className="font-medium">Radius</span>
+                  <div className="flex items-center gap-2">
+                    Km
+                    <Switch
+                      checked={unit === "miles"}
+                      onCheckedChange={(checked) => {
+                        setUnit(checked ? "miles" : "km");
+                      }}
+                    />
+                    Miles
+                  </div>
                 </div>
+                <div className="text-center">
+                  {convertedRadius.toFixed(2)} {unit}
+                </div>
+                <Slider
+                  min={0}
+                  max={20}
+                  step={0.2}
+                  defaultValue={[5]}
+                  value={[radius]}
+                  onValueChange={([value]) => {
+                    setRadius(value);
+                    console.log("Radius changed to:", value);
+                  }}
+                />
+                <Button
+                  onClick={handleApply}
+                  className="mt-2 w-full bg-black text-white hover:bg-gray-800"
+                >
+                  Apply
+                </Button>
               </CardContent>
             </Card>
           </div>
           <div className="relative z-0 h-full w-full">
-            {" "}
-            {/* Ensure lower z-index */}
             {currentPosition && (
               <LeafletMap
                 position={currentPosition}
                 radius={radius}
                 zoom={13}
                 fixedMarker
-                users={users} // Pass users to the LeafletMap component
+                users={users}
               />
             )}
           </div>
@@ -168,6 +182,7 @@ export default function MapPage() {
                   <TableHead>Name</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Telegram</TableHead>
+                  <TableHead>Interests</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -183,6 +198,7 @@ export default function MapPage() {
                       <TableCell>{`${user.firstName} ${user.lastName}`}</TableCell>
                       <TableCell>{user.email}</TableCell>
                       <TableCell>{user.telegram}</TableCell>
+                      <TableCell>{user.interests}</TableCell>
                     </TableRow>
                   ))
                 )}
