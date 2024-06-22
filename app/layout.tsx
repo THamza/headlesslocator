@@ -13,10 +13,10 @@ const fontSans = FontSans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://clerk-next-app.vercel.app/"),
-  title: "Next.js Clerk Template",
+  metadataBase: new URL("https://theheadlessway.org/"),
+  title: "Headless Community Locator",
   description:
-    "A simple and powerful Next.js template featuring authentication and user management powered by Clerk.",
+    "A Simple Headless Community Locator App built with Next.js, Clerk, and Leaflet allowing users to view and share their location with others.",
   openGraph: { images: ["/og.png"] },
 };
 

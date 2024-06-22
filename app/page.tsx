@@ -12,30 +12,34 @@ export default function Home() {
       <Header />
       <main className="flex-1">
         <section
-          className="relative flex items-center justify-center min-h-[70vh] bg-cover bg-center"
-          style={{
-            backgroundImage: "url(/placeholder.svg?height=600&width=1200)",
-          }}
+          className="relative flex items-center justify-center min-h-screen bg-cover bg-center"
+          style={{ backgroundImage: "url(/bg.webp)" }}
         >
           <div className="absolute inset-0 bg-black/50" />
-          <div className="relative z-10 flex flex-col items-center justify-center gap-4 px-4 text-center text-white">
+          <div className="relative z-10 p-8 bg-black/60 shadow-lg flex flex-col items-center justify-center gap-6 text-center text-white rounded-2xl">
+            {" "}
             <h1 className="text-4xl font-bold md:text-6xl">
               Connect with Headless Way Enthusiasts
             </h1>
-            <p className="max-w-lg text-lg md:text-xl">
-              Join a community of like-minded individuals exploring The Headless
-              Way
+            <p className="max-w-lg text-lg md:text-xl font-medium text-gray-300">
+              Join a community of like-minded individuals exploring <br /> The
+              Headless Way
             </p>
-            {/* <Button variant="default" size="lg" className="mt-4 bg-primary text-primary-foreground hover:bg-primary/90">
-              <a href="#">Get Started</a>
-            </Button> */}
             <SignedIn>
-              <Link
-                href="/dashboard"
-                className="px-4 py-2 rounded-full bg-[#131316] text-white text-sm font-semibold"
-              >
-                Dashboard
-              </Link>
+              <div className="flex gap-4">
+                <Link
+                  href="/profile"
+                  className="px-4 py-2 rounded-full font-semibold bg-white text-black hover:bg-gray-200"
+                >
+                  Profile
+                </Link>
+                <Link
+                  href="/map"
+                  className="px-4 py-2 rounded-full font-semibold bg-white text-black hover:bg-gray-200"
+                >
+                  Community
+                </Link>
+              </div>
             </SignedIn>
             <SignedOut>
               <SignInButton>
@@ -46,6 +50,7 @@ export default function Home() {
             </SignedOut>
           </div>
         </section>
+
         <section id="features" className="py-12 bg-muted">
           <div className="container px-4 mx-auto">
             {/* <h2 className="mb-8 text-3xl font-bold text-center">Features</h2> */}
@@ -111,7 +116,6 @@ export default function Home() {
         </section>
       </main>
       <footer className="flex items-center justify-between px-4 py-2 bg-muted">
-        <div>&copy; 2024 Headless Community Locator</div>
         <nav>
           <Link href="#" className="mr-4 hover:underline" prefetch={false}>
             Privacy Policy
@@ -120,6 +124,11 @@ export default function Home() {
             Terms of Service
           </Link>
         </nav>
+        <div>
+          <p className="text-sm text-muted-foreground">
+            &copy; 2024 Headless Community Locator
+          </p>
+        </div>
       </footer>
     </div>
   );

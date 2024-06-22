@@ -49,6 +49,7 @@ export default function LeafletMap({
   radius,
   fixedMarker = false,
   users = [],
+  onMarkerDragEnd,
 }: any) {
   return (
     <MapContainer
@@ -66,6 +67,13 @@ export default function LeafletMap({
         position={position}
         draggable={!fixedMarker}
         icon={currentUserIcon}
+        eventHandlers={{
+          dragend: (event) => {
+            const marker = event.target;
+            const newPosition = marker.getLatLng();
+            onMarkerDragEnd(newPosition);
+          },
+        }}
       >
         <Popup>
           Your location <br /> {position.lat.toFixed(3)},{" "}

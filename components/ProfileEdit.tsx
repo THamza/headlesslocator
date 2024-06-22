@@ -167,16 +167,6 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
             </div>
           </div>
           <div className="grid w-full gap-1.5">
-            <Label htmlFor="telegramHandle">Telegram Handle</Label>
-            <Input
-              id="telegramHandle"
-              name="telegram"
-              placeholder="Enter your Telegram handle"
-              value={formData.telegram || ""}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="grid w-full gap-1.5">
             <Label htmlFor="interests">Interests</Label>
             <Select
               value={formData.interests || ""}
@@ -188,12 +178,22 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Interests</SelectLabel>
-                  <SelectItem value="meeting">Meeting People</SelectItem>
-                  <SelectItem value="1-1-calls">1-1 Video Calls</SelectItem>
+                  <SelectItem value="meeting">Meeting IRL</SelectItem>
                   <SelectItem value="group-calls">Group Calls</SelectItem>
+                  <SelectItem value="both">Both</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
+          </div>
+          <div className="grid w-full gap-1.5">
+            <Label htmlFor="telegramHandle">Telegram Handle</Label>
+            <Input
+              id="telegramHandle"
+              name="telegram"
+              placeholder="Enter your Telegram handle"
+              value={formData.telegram || ""}
+              onChange={handleChange}
+            />
           </div>
           <div className="grid w-full gap-1.5">
             <Label htmlFor="address">Address</Label>
