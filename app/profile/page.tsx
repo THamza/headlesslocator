@@ -1,12 +1,16 @@
 "use client";
+import dynamic from "next/dynamic";
 import Header from "@/components/Header";
-import ProfileEdit from "@/components/ProfileEdit";
 import { useUser } from "@clerk/clerk-react";
-import { Profile } from "@prisma/client";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-
 import { useEffect, useState } from "react";
+import { Profile } from "@prisma/client";
+
+// Dynamically import the ProfileEdit component
+const ProfileEdit = dynamic(() => import("@/components/ProfileEdit"), {
+  ssr: false,
+});
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -52,7 +56,6 @@ export default function ProfilePage() {
     );
 
   if (!isSignedIn && isLoaded) {
-    // window.location.href = "/";
     router.push("/");
     return null;
   }

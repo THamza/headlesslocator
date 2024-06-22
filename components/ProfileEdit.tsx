@@ -23,7 +23,11 @@ import {
 import { Profile } from "@prisma/client";
 import { toast } from "./ui/use-toast";
 import dynamic from "next/dynamic";
-import LeafletMap from "./LeafletMap";
+
+// Dynamically import the LeafletMap component
+const LeafletMap = dynamic(() => import("./LeafletMap"), {
+  ssr: false,
+});
 
 type PartialProfile = Partial<Profile>;
 

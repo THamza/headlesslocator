@@ -1,4 +1,5 @@
 "use client";
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,13 +13,17 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-import LeafletMap from "@/components/LeafletMap";
 import { toast } from "@/components/ui/use-toast";
 import { CSVLink } from "react-csv";
 import { Loader2 } from "lucide-react";
 import { useUser } from "@clerk/clerk-react";
 import { useRouter } from "next/navigation";
 import { Switch } from "@/components/ui/switch";
+
+// Dynamically import the LeafletMap component
+const LeafletMap = dynamic(() => import("@/components/LeafletMap"), {
+  ssr: false,
+});
 
 type User = {
   id: string;

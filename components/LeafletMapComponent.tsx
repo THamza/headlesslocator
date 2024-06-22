@@ -7,7 +7,7 @@ import {
   Circle,
   useMap,
 } from "react-leaflet";
-import L from "leaflet";
+import L, { Circle as LeafletCircle } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-defaulticon-compatibility";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
@@ -51,11 +51,12 @@ export default function LeafletMap({
   users = [],
   onMarkerDragEnd,
 }: any) {
-  const mapRef = useRef<any>(null);
+  const mapRef = useRef(null);
+  const radiusRef = useRef<LeafletCircle | null>(null);
 
   useEffect(() => {
-    if (mapRef.current) {
-      mapRef.current.setRadius(radius * 1000); // Convert radius to meters
+    if (radiusRef.current) {
+      radiusRef.current.setRadius(radius * 1000); // Convert radius to meters
     }
   }, [radius]);
 
@@ -65,6 +66,7 @@ export default function LeafletMap({
       zoom={zoom}
       scrollWheelZoom={false}
       className="h-full w-full"
+      ref={mapRef}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -88,15 +90,15 @@ export default function LeafletMap({
           {position.lng.toFixed(3)}
         </Popup>
       </Marker>
-      {radius && (
-        <Circle
-          ref={mapRef}
-          center={position}
-          radius={radius * 1000} // Convert radius to meters
-          fillColor="blue"
-          color="blue"
-        />
-      )}
+      <Circle
+        center={position}
+        radius={radius * 1000} // Convert radius to meters
+        fillColor="blue"
+        color="blue"
+        ref={(el) => {
+          radiusRef.current = el;
+        }}
+      />
       {users.map((user: any) => (
         <Marker
           key={user.id}
