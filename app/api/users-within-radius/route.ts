@@ -40,7 +40,28 @@ export async function POST(request: NextRequest) {
     return distance <= radius;
   });
 
-  return NextResponse.json({ users: usersWithinRadius });
+  const cleanedUsers = usersWithinRadius.map((user) => {
+    const {
+      firstName,
+      lastName,
+      email,
+      telegram,
+      latitude,
+      longitude,
+      interests,
+    } = user;
+    return {
+      firstName,
+      lastName,
+      email,
+      telegram,
+      latitude,
+      longitude,
+      interests,
+    };
+  });
+
+  return NextResponse.json({ users: cleanedUsers });
 }
 
 export async function GET() {

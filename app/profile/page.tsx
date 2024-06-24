@@ -6,11 +6,12 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Profile } from "@prisma/client";
+import ProfileEdit from "@/components/ProfileEdit";
 
 // Dynamically import the ProfileEdit component
-const ProfileEdit = dynamic(() => import("@/components/ProfileEdit"), {
-  ssr: false,
-});
+// const ProfileEdit = dynamic(() => import("@/components/ProfileEdit"), {
+//   ssr: false,
+// });
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<Profile | null>(null);

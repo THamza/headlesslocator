@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Card,
   CardHeader,
@@ -23,8 +23,17 @@ import {
 import { Profile } from "@prisma/client";
 import { toast } from "./ui/use-toast";
 import dynamic from "next/dynamic";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
+import { Badge } from "./ui/badge";
+import { TelegramUsernameTutorial } from "./TelegramUsernameTutorial";
+import { Separator } from "./ui/separator";
+import { debounce } from "@/lib/utils";
 
-// Dynamically import the LeafletMap component
 const LeafletMap = dynamic(() => import("./LeafletMap"), {
   ssr: false,
 });
@@ -51,9 +60,16 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
     telegram: profile?.telegram || "",
     interests: profile?.interests || "",
     address: profile?.address || "",
+    country: profile?.country || "",
+    city: profile?.city || "",
+    state: profile?.state || "",
+    zipCode: profile?.zipCode || "",
     latitude: position.lat,
     longitude: position.lng,
   });
+
+  const formDataRef = useRef<PartialProfile>(formData);
+  formDataRef.current = formData;
 
   useEffect(() => {
     if (profile) {
@@ -61,34 +77,67 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
     }
   }, [profile]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
   const handleSelectChange = (value: string) => {
     setFormData({ ...formData, interests: value });
   };
 
-  const handleAddressSearch = async () => {
-    if (!formData.address) return;
+  const handleAddressSearch = useCallback(async () => {
+    const { city, state, zipCode, country } = formDataRef.current;
+    if (!city && !state && !zipCode && !country) return;
+
     setIsAddressSearchLoading(true);
 
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?q=${formData.address}&format=json`
-    );
-    const data = await response.json();
-    setIsAddressSearchLoading(false);
-    if (data && data.length > 0) {
-      const { lat, lon } = data[0];
-      setPosition({ lat: parseFloat(lat), lng: parseFloat(lon) });
-    } else {
+    const params = new URLSearchParams({
+      city: city || "",
+      state: state || "",
+      postalcode: zipCode || "",
+      country: country || "",
+      format: "json",
+    });
+
+    const url = `https://nominatim.openstreetmap.org/search?${params.toString()}`;
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      setIsAddressSearchLoading(false);
+
+      if (data && data.length > 0) {
+        const { lat, lon } = data[0];
+        setPosition({ lat: parseFloat(lat), lng: parseFloat(lon) });
+      } else {
+        toast({
+          title: "Address not found",
+          description: "Could not find the address. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      setIsAddressSearchLoading(false);
+      console.error("Failed to fetch the address:", error);
       toast({
-        title: "Address not found",
-        description: "Could not find the address. Please try again.",
+        title: "Error",
+        description:
+          "Failed to fetch the address. Please check your network connection and try again.",
         variant: "destructive",
       });
+    }
+  }, []);
+
+  const debouncedAddressSearch = useMemo(
+    () => debounce(handleAddressSearch, 1500),
+    []
+  );
+
+  // Apply change handlers for individual inputs related to the address search
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    console.log(e.target.name, e.target.value);
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    // Trigger debouncing if the changed field is relevant to the address
+    if (["city", "state", "zipCode", "country"].includes(e.target.name)) {
+      debouncedAddressSearch();
     }
   };
 
@@ -101,6 +150,10 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
     setIsUpdateLoading(true);
     formData.latitude = position.lat;
     formData.longitude = position.lng;
+    formData.address =
+      `${formData.city} ${formData.state} ${formData.zipCode} ${formData.country}`
+        .replaceAll("undefined", "")
+        .trim();
 
     const res = await fetch(`/api/profile/${profile?.clerkId}`, {
       method: "POST",
@@ -137,10 +190,27 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
   return (
     <Card className="w-full max-w-2xl shadow-lg">
       <CardHeader>
-        <CardTitle>Profile Setup</CardTitle>
-        <CardDescription>
-          Please provide your details to complete your profile.
-        </CardDescription>
+        <div className=" flex justify-between items-center w-full">
+          <div>
+            <CardTitle>Profile Setup</CardTitle>
+            <CardDescription>
+              Please provide your details to complete your profile.
+            </CardDescription>
+          </div>
+          <div>
+            <Button
+              type="submit"
+              className="w-full bg-black text-white hover:bg-gray-800 mt-8"
+              disabled={isUpdateLoading}
+            >
+              {isUpdateLoading ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                "Update Profile"
+              )}
+            </Button>
+          </div>
+        </div>
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-6">
@@ -171,28 +241,12 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
             </div>
           </div>
           <div className="grid w-full gap-1.5">
-            <Label htmlFor="interests">Interests</Label>
-            <Select
-              value={formData.interests || ""}
-              onValueChange={handleSelectChange}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select an interest" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Interests</SelectLabel>
-                  <SelectItem value="meeting">Meeting IRL</SelectItem>
-                  <SelectItem value="group-calls">Group Calls</SelectItem>
-                  <SelectItem value="both">Both</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="grid w-full gap-1.5">
-            <Label htmlFor="telegramHandle">Telegram Handle</Label>
             <div className="flex flex-row items-center gap-1.5">
-              <p className="text-gray-500">t.me/</p>
+              <Label htmlFor="telegramHandle">Telegram Handle</Label>
+              <TelegramUsernameTutorial />
+            </div>
+            <div className="flex flex-row items-center gap-1.5">
+              <p className="text-gray-500">@</p>
               <Input
                 id="telegramHandle"
                 name="telegram"
@@ -203,37 +257,93 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
             </div>
           </div>
           <div className="grid w-full gap-1.5">
-            <Label htmlFor="address">Address</Label>
-            <div className="relative">
-              <div className="flex flex-row items-center gap-1.5">
-                <div className="w-full">
+            <Label htmlFor="interests">Interest</Label>
+            <Select
+              value={formData.interests || ""}
+              onValueChange={handleSelectChange}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select an interest" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Interests</SelectLabel>
+                  <SelectItem value="meeting">In-person meetings</SelectItem>
+                  <SelectItem value="group-calls">Group Calls</SelectItem>
+                  <SelectItem value="both">Calls and meetings</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+          <Separator className="my-4" />
+          <div className="grid w-full gap-1.5">
+            <h2 className="text-lg font-semibold">Location</h2>
+            <div className="grid w-full gap-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="city">City</Label>
                   <Input
-                    id="address"
-                    name="address"
-                    placeholder="Enter your address"
-                    value={formData.address || ""}
+                    id="city"
+                    name="city"
+                    placeholder="San Francisco"
+                    value={formData.city || ""}
                     onChange={handleChange}
                   />
                 </div>
-                <div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    onClick={handleAddressSearch}
-                    disabled={isAddressSearchLoading}
-                  >
-                    {isAddressSearchLoading ? (
-                      <Loader2 className="animate-spin" />
-                    ) : (
-                      <SearchIcon />
-                    )}
-                  </Button>
+                <div className="space-y-2">
+                  <Label htmlFor="state">State</Label>
+                  <Input
+                    id="state"
+                    name="state"
+                    placeholder="New York"
+                    value={formData.state || ""}
+                    onChange={handleChange}
+                  />
                 </div>
               </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="zipCode">Zip Code</Label>
+                  <Input
+                    id="zipCode"
+                    name="zipCode"
+                    placeholder="12345"
+                    type="number"
+                    value={formData.zipCode || ""}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="country">Country</Label>
+                  <Input
+                    id="country"
+                    name="country"
+                    placeholder="United States"
+                    value={formData.country || ""}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+              {/* <Button
+                type="button"
+                className="bg-white text-black hover:bg-gray-100 p-2 w-full"
+                onClick={handleAddressSearch}
+                disabled={isAddressSearchLoading}
+                variant="outline"
+              >
+                {isAddressSearchLoading ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  <SearchIcon />
+                )}
+              </Button> */}
             </div>
           </div>
           <div className="h-96 w-full">
+            <p className="text-gray-500 text-sm mb-2">
+              Drag the marker (<MapPinIcon className="inline-block" />) on the
+              map to edit or refine your location.{" "}
+            </p>
             <LeafletMap
               position={position}
               zoom={13}
@@ -244,7 +354,7 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
         <CardFooter>
           <Button
             type="submit"
-            className="w-full bg-black text-white hover:bg-gray-800"
+            className="w-full bg-black text-white hover:bg-gray-800 mt-8"
             disabled={isUpdateLoading}
           >
             {isUpdateLoading ? (

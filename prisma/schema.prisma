@@ -29,6 +29,10 @@ model Profile {
   telegram   String?
   interests  String?
   address    String?
+  zipCode    String?
+  country    String?
+  city       String?
+  state      String?
   latitude   Float?
   longitude  Float?
   createdAt  DateTime @default(now())

@@ -1,19 +1,38 @@
+"use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/nextjs";
-import { JSX, SVGProps } from "react";
+import { JSX, SVGProps, useState } from "react";
 import Header from "@/components/Header";
 
+const BG_IMAGES = [
+  "bg.jpeg",
+  "bg2.webp",
+  "bg3.webp",
+  "bg4.webp",
+  "bg5.jpg",
+  "bg6.jpg",
+  "bg7.webp",
+];
+
 export default function Home() {
+  const [bgIndex, setBgIndex] = useState(0);
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
+      <Button
+        onClick={() => {
+          setBgIndex((bgIndex + 1) % BG_IMAGES.length);
+        }}
+      >
+        Change Background ({bgIndex + 1}/{BG_IMAGES.length})
+      </Button>
       <main className="flex-1">
         <section
           className="relative flex items-center justify-center min-h-screen bg-cover bg-center"
-          style={{ backgroundImage: "url(/bg.webp)" }}
+          style={{ backgroundImage: `url(/${BG_IMAGES[bgIndex]})` }}
         >
           <div className="absolute inset-0 bg-black/50" />
           <div className="relative z-10 p-8 bg-black/60 shadow-lg flex flex-col items-center justify-center gap-6 text-center text-white rounded-2xl">
@@ -58,58 +77,18 @@ export default function Home() {
               <div className="flex flex-col items-center gap-2 text-center">
                 <UsersIcon className="w-12 h-12 text-primary" />
                 <h3 className="text-xl font-semibold">Connect Locally</h3>
-                <p className="text-muted-foreground">
-                  Find and connect with Headless Way enthusiasts in your area.
-                </p>
               </div>
               <div className="flex flex-col items-center gap-2 text-center">
                 <HandshakeIcon className="w-12 h-12 text-primary" />
-                <h3 className="text-xl font-semibold">Collaborate</h3>
-                <p className="text-muted-foreground">
-                  Work together on projects and share knowledge with your
-                  community.
-                </p>
+                <h3 className="text-xl font-semibold">
+                  Find Headless Friends While Traveling
+                </h3>
               </div>
               <div className="flex flex-col items-center gap-2 text-center">
-                <RocketIcon className="w-12 h-12 text-primary" />
-                <h3 className="text-xl font-semibold">Grow Together</h3>
-                <p className="text-muted-foreground">
-                  Learn from each other and grow your skills in The Headless
-                  Way.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-        <section id="community" className="py-12 bg-background">
-          <div className="container px-4 mx-auto">
-            <h2 className="mb-8 text-3xl font-bold text-center">
-              Our Community
-            </h2>
-            <div className="grid gap-8 md:grid-cols-3">
-              <div className="flex flex-col items-center gap-2 text-center">
-                <Avatar>
-                  <AvatarImage src="/placeholder-user.jpg" />
-                  <AvatarFallback>JD</AvatarFallback>
-                </Avatar>
-                <h3 className="text-xl font-semibold">John Doe</h3>
-                <p className="text-muted-foreground">San Francisco, CA</p>
-              </div>
-              <div className="flex flex-col items-center gap-2 text-center">
-                <Avatar>
-                  <AvatarImage src="/placeholder-user.jpg" />
-                  <AvatarFallback>JS</AvatarFallback>
-                </Avatar>
-                <h3 className="text-xl font-semibold">Jane Smith</h3>
-                <p className="text-muted-foreground">New York, NY</p>
-              </div>
-              <div className="flex flex-col items-center gap-2 text-center">
-                <Avatar>
-                  <AvatarImage src="/placeholder-user.jpg" />
-                  <AvatarFallback>MB</AvatarFallback>
-                </Avatar>
-                <h3 className="text-xl font-semibold">Michael Brown</h3>
-                <p className="text-muted-foreground">Chicago, IL</p>
+                <EyeIcon className="w-12 h-12 text-primary" />
+                <h3 className="text-xl font-semibold">
+                  Share the One Seeing with Many Voices
+                </h3>
               </div>
             </div>
           </div>
@@ -126,7 +105,10 @@ export default function Home() {
         </nav>
         <div>
           <p className="text-sm text-muted-foreground">
-            &copy; 2024 Headless Community Locator
+            <a href="https://www.thamza.com" target="_blank">
+              &copy;
+            </a>{" "}
+            2024 Headless Community Locator
           </p>
         </div>
       </footer>
@@ -182,7 +164,7 @@ function NetworkIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   );
 }
 
-function RocketIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
+function EyeIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -196,10 +178,8 @@ function RocketIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
       strokeLinecap="round"
       strokeLinejoin="round"
     >
-      <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
-      <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
-      <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" />
-      <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
+      <path d="M22 12s-4-8-10-8S2 12 2 12s4 8 10 8 10-8 10-8z" />
+      <circle cx="12" cy="12" r="3" />
     </svg>
   );
 }
