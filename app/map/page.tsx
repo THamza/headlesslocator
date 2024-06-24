@@ -149,7 +149,6 @@ export default function MapPage() {
                   value={[radius]}
                   onValueChange={([value]) => {
                     setRadius(value);
-                    console.log("Radius changed to:", value);
                   }}
                 />
                 <Button
