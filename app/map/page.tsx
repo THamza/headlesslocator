@@ -72,6 +72,10 @@ export default function MapPage() {
     }
   }, [user, router]);
 
+  useEffect(() => {
+    handleApply();
+  }, [currentPosition]);
+
   const handleApply = async () => {
     setIsLoading(true);
     const res = await fetch(`/api/users-within-radius`, {
@@ -93,7 +97,9 @@ export default function MapPage() {
   const csvData = users.map((user) => ({
     Name: `${user.firstName} ${user.lastName}`,
     Email: user.email,
-    Telegram: user.telegram,
+    Telegram: user.telegram.startsWith("@")
+      ? user.telegram
+      : `@${user.telegram}`,
   }));
 
   if (!isLoaded || !currentPosition) {
@@ -148,9 +154,9 @@ export default function MapPage() {
                 />
                 <Button
                   onClick={handleApply}
-                  className="mt-2 w-full bg-black text-white hover:bg-gray-800"
+                  className="glow-button mt-2 flex w-full items-center bg-gradient-to-r from-indigo-400 to-cyan-400 text-white"
                 >
-                  Apply
+                  Search
                 </Button>
               </CardContent>
             </Card>
@@ -202,7 +208,11 @@ export default function MapPage() {
                     <TableRow key={user.id}>
                       <TableCell>{`${user.firstName} ${user.lastName}`}</TableCell>
                       <TableCell>{user.email}</TableCell>
-                      <TableCell>{user.telegram}</TableCell>
+                      <TableCell>
+                        {user.telegram.startsWith("@")
+                          ? user.telegram
+                          : `@${user.telegram}`}
+                      </TableCell>
                       <TableCell>{user.interests}</TableCell>
                     </TableRow>
                   ))
