@@ -133,7 +133,6 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    console.log(e.target.name, e.target.value);
     setFormData({ ...formData, [e.target.name]: e.target.value });
     // Trigger debouncing if the changed field is relevant to the address
     if (["city", "state", "zipCode", "country"].includes(e.target.name)) {
