@@ -97,9 +97,11 @@ export default function MapPage() {
   const csvData = users.map((user) => ({
     Name: `${user.firstName} ${user.lastName}`,
     Email: user.email,
-    Telegram: user.telegram.startsWith("@")
-      ? user.telegram
-      : `@${user.telegram}`,
+    Telegram: user.telegram
+      ? user.telegram.startsWith("@")
+        ? user.telegram
+        : `@${user.telegram}`
+      : "",
   }));
 
   if (!isLoaded || !currentPosition) {
@@ -208,9 +210,11 @@ export default function MapPage() {
                       <TableCell>{`${user.firstName} ${user.lastName}`}</TableCell>
                       <TableCell>{user.email}</TableCell>
                       <TableCell>
-                        {user.telegram.startsWith("@")
-                          ? user.telegram
-                          : `@${user.telegram}`}
+                        {user.telegram
+                          ? user.telegram.startsWith("@")
+                            ? user.telegram
+                            : `@${user.telegram}`
+                          : ""}
                       </TableCell>
                       <TableCell>{user.interests}</TableCell>
                     </TableRow>
