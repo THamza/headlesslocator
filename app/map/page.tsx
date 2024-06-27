@@ -48,6 +48,10 @@ export default function MapPage() {
   const { isSignedIn, user, isLoaded } = useUser();
   const router = useRouter();
 
+  const handleMarkerDragEnd = (latlng: { lat: number; lng: number }) => {
+    setCurrentPosition({ lat: latlng.lat, lng: latlng.lng });
+  };
+
   useEffect(() => {
     if (user) {
       const fetchProfile = async (userId: string) => {
@@ -168,7 +172,8 @@ export default function MapPage() {
                 position={currentPosition}
                 radius={radius}
                 zoom={13}
-                fixedMarker
+                // fixedMarker
+                onMarkerDragEnd={handleMarkerDragEnd}
                 users={users}
               />
             )}

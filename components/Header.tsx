@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import {
   NavigationMenu,
@@ -5,16 +6,23 @@ import {
   NavigationMenuItem,
   NavigationMenuLink,
 } from "@/components/ui/navigation-menu";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   SignedIn,
   SignedOut,
+  SignIn,
   SignInButton,
   SignUpButton,
   UserButton,
 } from "@clerk/nextjs";
 import Image from "next/image";
 import { Roboto } from "next/font/google";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useState } from "react";
 
 const roboto = Roboto({
   weight: "700",
@@ -22,9 +30,15 @@ const roboto = Roboto({
 });
 
 export default function Header() {
+  const [showSignInDialog, setShowSignInDialog] = useState(false);
   return (
     <header className="flex items-center justify-between bg-primary px-4 py-3 shadow-sm bg-white">
       <div className="flex items-center">
+        <Dialog open={showSignInDialog} onOpenChange={setShowSignInDialog}>
+          <DialogContent className="bg-transparent border-none">
+            <SignIn />
+          </DialogContent>
+        </Dialog>
         <Link href="https://headless.org/" prefetch={false} target="_blank">
           <Image
             src="/theheadlessway.png"
@@ -64,11 +78,14 @@ export default function Header() {
           </SignedIn>
           <SignedOut>
             <div className="flex items-center gap-4">
-              <SignInButton>
-                <button className="px-4 py-2 rounded-full bg-[#131316] text-white text-sm font-semibold">
-                  Login
-                </button>
-              </SignInButton>
+              {/* <SignInButton> */}
+              <button
+                className="px-4 py-2 rounded-full bg-[#131316] text-white text-sm font-semibold"
+                onClick={() => setShowSignInDialog(true)}
+              >
+                Login
+              </button>
+              {/* </SignInButton> */}
               <SignUpButton>
                 <button className="px-4 py-2 rounded-full bg-[#131316] text-white text-sm font-semibold">
                   Sign Up

@@ -241,7 +241,7 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
           </div>
           <div className="grid w-full gap-1.5">
             <div className="flex flex-row items-center gap-1.5">
-              <Label htmlFor="telegramHandle">Telegram Handle</Label>
+              <Label htmlFor="telegramHandle">Telegram Username</Label>
               <TelegramUsernameTutorial />
             </div>
             <div className="flex flex-row items-center gap-1.5">
@@ -249,7 +249,7 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
               <Input
                 id="telegramHandle"
                 name="telegram"
-                placeholder="Enter your Telegram handle"
+                placeholder="Enter your Telegram username"
                 value={formData.telegram || ""}
                 onChange={handleChange}
               />
