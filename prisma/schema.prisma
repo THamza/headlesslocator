@@ -35,6 +35,9 @@ model Profile {
   state      String?
   latitude   Float?
   longitude  Float?
+  notify     Boolean  @default(false)
+  isAdmin    Boolean  @default(false)
+  notificationRadius Float?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }
