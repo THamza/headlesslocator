@@ -49,7 +49,9 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
     lng: profile?.longitude || LONDON_COORDS.lng,
   });
   const [unit, setUnit] = useState("km");
-  const [radius, setRadius] = useState(profile?.notificationRadius || 5);
+  const [radius, setRadius] = useState<number>(
+    profile?.notificationRadius || 5
+  );
   const [formData, setFormData] = useState<PartialProfile>({
     email: profile?.email || "",
     firstName: profile?.firstName || "",
@@ -144,7 +146,11 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
   const handleRadiusChange = (value: number[]) => {
     const newValue = value[0];
     setRadius(newValue);
-    setFormData({ ...formData, notificationRadius: newValue });
+    const actualRadius = unit === "km" ? newValue : newValue / 0.621371;
+    setFormData({
+      ...formData,
+      notificationRadius: parseFloat(actualRadius.toFixed(2)),
+    });
   };
 
   const handleMarkerDragEnd = (latlng: { lat: number; lng: number }) => {
@@ -152,7 +158,17 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
   };
 
   const handleUnitChange = (checked: boolean) => {
-    setUnit(checked ? "miles" : "km");
+    const newUnit = checked ? "miles" : "km";
+    const actualRadius = unit === "km" ? radius : radius / 0.621371;
+    const convertedRadius =
+      newUnit === "km" ? actualRadius : actualRadius * 0.621371;
+
+    setUnit(newUnit);
+    setRadius(parseFloat(convertedRadius.toFixed(2)));
+    setFormData({
+      ...formData,
+      notificationRadius: parseFloat(actualRadius.toFixed(2)),
+    });
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -379,6 +395,7 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
                   defaultValue={[formData.notificationRadius || 5]}
                   value={[radius]}
                   onValueChange={handleRadiusChange}
+                  className="mt-4"
                 />
                 <div className="text-sm text-gray-500 mt-2">
                   {convertedRadius.toFixed(2)} {unit}
