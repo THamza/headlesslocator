@@ -50,7 +50,7 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
   });
   const [unit, setUnit] = useState("km");
   const [radius, setRadius] = useState<number>(
-    profile?.notificationRadius || 5
+    profile?.notificationRadius || 1
   );
   const [formData, setFormData] = useState<PartialProfile>({
     email: profile?.email || "",

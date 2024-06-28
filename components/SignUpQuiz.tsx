@@ -17,6 +17,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Loader2 } from "lucide-react";
+import { Resend } from "resend";
 
 const SignUpQuiz = ({ onQuizSuccess }: { onQuizSuccess: () => void }) => {
   const methods = useForm();
@@ -58,9 +59,11 @@ const SignUpQuiz = ({ onQuizSuccess }: { onQuizSuccess: () => void }) => {
 
   const handleEmailSubmit = async (emailData: any) => {
     setIsRegistrationRequestLoading(true);
+
     const registrationRequestData = {
       email: emailData.email,
       message: emailData.message,
+      notified: true,
     };
     const res = await fetch(`/api/registration-request`, {
       method: "POST",
@@ -69,6 +72,7 @@ const SignUpQuiz = ({ onQuizSuccess }: { onQuizSuccess: () => void }) => {
       },
       body: JSON.stringify(registrationRequestData),
     });
+
     setIsRegistrationRequestLoading(false);
     window.location.href = "/";
   };
