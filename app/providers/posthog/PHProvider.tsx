@@ -17,13 +17,13 @@ if (typeof window !== "undefined") {
 
   posthog.init(
     process.env.NEXT_PUBLIC_POSTHOG_KEY ||
-      "phc_F9h4R7XeLchM0ek1k5HLe5ofrdte9c3hB6DRsmjHx9T",
+      "phc_znmM8JYGKGC5YGVCyzHx4pFiFrw75xVqgvtxzwtGMaZ",
     {
       //TODO: Fix this, for some reason, this specific key is not found on production
       api_host: getPosthogHostUrl(),
       capture_pageview: false, // Disable automatic pageview capture, as we capture manually
       bootstrap: bootstrapData,
-    },
+    }
   );
 }
 

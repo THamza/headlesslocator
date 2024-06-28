@@ -1,4 +1,4 @@
-import { getBaseUrl } from "@/components/utils/general";
+import { getBaseUrl } from "@/lib/general";
 
 export function getPosthogHostUrl() {
   return `${getBaseUrl()}/ingest`;

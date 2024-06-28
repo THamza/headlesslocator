@@ -57,7 +57,7 @@ export const NearbyUsersListTemplate: React.FC<
               backgroundColor: "#f2f2f2",
             }}
           >
-            Username
+            Telegram
           </th>
           <th
             style={{

@@ -28,6 +28,7 @@ import { Separator } from "./ui/separator";
 import { debounce } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
+import { MAX_RADIUS_RANGE } from "../lib/constants";
 
 const LeafletMap = dynamic(() => import("./LeafletMap"), {
   ssr: false,
@@ -390,7 +391,7 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
                 <Slider
                   id="notificationRadius"
                   min={1}
-                  max={50}
+                  max={MAX_RADIUS_RANGE}
                   step={1}
                   defaultValue={[formData.notificationRadius || 5]}
                   value={[radius]}

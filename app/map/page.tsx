@@ -25,6 +25,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+import { MAX_RADIUS_RANGE } from "@/lib/constants";
 
 // Dynamically import the LeafletMap component
 const LeafletMap = dynamic(() => import("@/components/LeafletMap"), {
@@ -188,7 +189,7 @@ export default function MapPage() {
                 </div>
                 <Slider
                   min={0}
-                  max={20}
+                  max={MAX_RADIUS_RANGE}
                   step={0.2}
                   defaultValue={[5]}
                   value={[radius]}

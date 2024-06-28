@@ -22,11 +22,12 @@ export const NewUserNearbyTemplate: React.FC<NewUserNearbyTemplateProps> = ({
       color: "#333",
     }}
   >
-    <h1 style={{ color: "#4CAF50" }}>Hello, {firstName}!</h1>
+    <h1 style={{ color: "#000" }}>Hello, {firstName}!</h1>
     <p>
       A new user has joined within your notification radius. Here are their
       details:
     </p>
+    <br />
     <p>
       <strong>Name:</strong> {newUser.name}
     </p>
@@ -39,8 +40,9 @@ export const NewUserNearbyTemplate: React.FC<NewUserNearbyTemplateProps> = ({
     <p>
       <strong>Interests:</strong> {newUser.interests}
     </p>
+    <br />
     <p>Feel free to reach out and connect with them.</p>
     <p>Best regards,</p>
-    <p>Your App Team</p>
+    <p>Headless CL Team</p>
   </div>
 );
