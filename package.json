@@ -35,11 +35,14 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "embla-carousel-react": "^8.1.5",
+    "js-cookie": "^3.0.5",
     "leaflet": "^1.9.4",
     "leaflet-defaulticon-compatibility": "^0.1.2",
     "lucide-react": "^0.395.0",
     "next": "^14.2.3",
     "postcss": "^8.4.33",
+    "posthog-js": "^1.142.0",
+    "posthog-node": "^4.0.1",
     "prism-react-renderer": "^2.3.1",
     "prisma": "^5.15.1",
     "prop-types": "^15.8.1",
@@ -58,6 +61,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
     "@types/leaflet": "^1.9.12",
     "@types/react-csv": "^1.1.10",
     "@types/react-google-recaptcha": "^2.1.9"
