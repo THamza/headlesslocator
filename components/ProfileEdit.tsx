@@ -10,7 +10,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2, MapPinIcon, SearchIcon } from "lucide-react";
+import { Loader2, MapPinIcon } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -23,16 +23,12 @@ import {
 import { Profile } from "@prisma/client";
 import { toast } from "./ui/use-toast";
 import dynamic from "next/dynamic";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "./ui/tooltip";
-import { Badge } from "./ui/badge";
 import { TelegramUsernameTutorial } from "./TelegramUsernameTutorial";
 import { Separator } from "./ui/separator";
 import { debounce } from "@/lib/utils";
+import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
+import { MAX_RADIUS_RANGE } from "../lib/constants";
 
 const LeafletMap = dynamic(() => import("./LeafletMap"), {
   ssr: false,
@@ -53,6 +49,10 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
     lat: profile?.latitude || LONDON_COORDS.lat,
     lng: profile?.longitude || LONDON_COORDS.lng,
   });
+  const [unit, setUnit] = useState("km");
+  const [radius, setRadius] = useState<number>(
+    profile?.notificationRadius || 1
+  );
   const [formData, setFormData] = useState<PartialProfile>({
     email: profile?.email || "",
     firstName: profile?.firstName || "",
@@ -66,6 +66,8 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
     zipCode: profile?.zipCode || "",
     latitude: position.lat,
     longitude: position.lng,
+    notify: profile?.notify || false,
+    notificationRadius: profile?.notificationRadius || 5,
   });
 
   const formDataRef = useRef<PartialProfile>(formData);
@@ -129,26 +131,55 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
     []
   );
 
-  // Apply change handlers for individual inputs related to the address search
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    // Trigger debouncing if the changed field is relevant to the address
     if (["city", "state", "zipCode", "country"].includes(e.target.name)) {
       debouncedAddressSearch();
     }
+  };
+
+  const handleSwitchChange = (checked: boolean) => {
+    setFormData({ ...formData, notify: checked });
+  };
+
+  const handleRadiusChange = (value: number[]) => {
+    const newValue = value[0];
+    setRadius(newValue);
+    const actualRadius = unit === "km" ? newValue : newValue / 0.621371;
+    setFormData({
+      ...formData,
+      notificationRadius: parseFloat(actualRadius.toFixed(2)),
+    });
   };
 
   const handleMarkerDragEnd = (latlng: { lat: number; lng: number }) => {
     setPosition({ lat: latlng.lat, lng: latlng.lng });
   };
 
+  const handleUnitChange = (checked: boolean) => {
+    const newUnit = checked ? "miles" : "km";
+    const actualRadius = unit === "km" ? radius : radius / 0.621371;
+    const convertedRadius =
+      newUnit === "km" ? actualRadius : actualRadius * 0.621371;
+
+    setUnit(newUnit);
+    setRadius(parseFloat(convertedRadius.toFixed(2)));
+    setFormData({
+      ...formData,
+      notificationRadius: parseFloat(actualRadius.toFixed(2)),
+    });
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setIsUpdateLoading(true);
+
+    const adjustedRadius = unit === "km" ? radius : radius / 0.621371;
     formData.latitude = position.lat;
     formData.longitude = position.lng;
+    formData.notificationRadius = adjustedRadius;
     formData.address =
       `${formData.city} ${formData.state} ${formData.zipCode} ${formData.country}`
         .replaceAll("undefined", "")
@@ -179,6 +210,8 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
     }
   };
 
+  const convertedRadius = unit === "km" ? radius : radius * 0.621371;
+
   if (!profile)
     return (
       <div>
@@ -188,30 +221,31 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
 
   return (
     <Card className="w-full max-w-2xl shadow-lg">
-      <CardHeader>
-        <div className=" flex justify-between items-center w-full">
-          <div>
-            <CardTitle>Profile Setup</CardTitle>
-            <CardDescription>
-              Please provide your details to complete your profile.
-            </CardDescription>
-          </div>
-          <div>
-            <Button
-              type="submit"
-              className="w-full bg-black text-white hover:bg-gray-800 mt-8"
-              disabled={isUpdateLoading}
-            >
-              {isUpdateLoading ? (
-                <Loader2 className="animate-spin" />
-              ) : (
-                "Update Profile"
-              )}
-            </Button>
-          </div>
-        </div>
-      </CardHeader>
       <form onSubmit={handleSubmit}>
+        <CardHeader>
+          <div className=" flex justify-between items-center w-full">
+            <div>
+              <CardTitle>Profile Setup</CardTitle>
+              <CardDescription>
+                Please provide your details to complete your profile.
+              </CardDescription>
+            </div>
+            <div>
+              <Button
+                type="submit"
+                className="w-full bg-black text-white hover:bg-gray-800 mt-8"
+                disabled={isUpdateLoading}
+              >
+                {isUpdateLoading ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  "Update Profile"
+                )}
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+
         <CardContent className="space-y-6">
           <div className="grid w-full gap-1.5">
             <Label htmlFor="email">Email</Label>
@@ -241,7 +275,7 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
           </div>
           <div className="grid w-full gap-1.5">
             <div className="flex flex-row items-center gap-1.5">
-              <Label htmlFor="telegramHandle">Telegram Handle</Label>
+              <Label htmlFor="telegramHandle">Telegram Username</Label>
               <TelegramUsernameTutorial />
             </div>
             <div className="flex flex-row items-center gap-1.5">
@@ -249,7 +283,7 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
               <Input
                 id="telegramHandle"
                 name="telegram"
-                placeholder="Enter your Telegram handle"
+                placeholder="Enter your Telegram username"
                 value={formData.telegram || ""}
                 onChange={handleChange}
               />
@@ -323,31 +357,60 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
                   />
                 </div>
               </div>
-              {/* <Button
-                type="button"
-                className="bg-white text-black hover:bg-gray-100 p-2 w-full"
-                onClick={handleAddressSearch}
-                disabled={isAddressSearchLoading}
-                variant="outline"
-              >
-                {isAddressSearchLoading ? (
-                  <Loader2 className="animate-spin" />
-                ) : (
-                  <SearchIcon />
-                )}
-              </Button> */}
             </div>
           </div>
-          <div className="h-96 w-full">
+          <div className="h-96 w-full mb-8">
             <p className="text-gray-500 text-sm mb-2">
               Drag the marker (<MapPinIcon className="inline-block" />) on the
-              map to edit or refine your location.{" "}
+              map to edit or refine your location.
             </p>
             <LeafletMap
               position={position}
               zoom={13}
+              radius={formData.notify ? convertedRadius : null}
               onMarkerDragEnd={handleMarkerDragEnd}
             />
+          </div>
+          <h2 className="text-lg font-semibold mt-8 text-white">.</h2>
+          <Separator className="my-4" />
+          <h2 className="text-lg font-semibold mt-8">Email Notifications</h2>
+          <div className="grid w-full gap-1.5">
+            <div className="flex items-center gap-2">
+              <Label htmlFor="notify">
+                Notify me when a new person is nearby
+              </Label>
+              <Switch
+                id="notify"
+                checked={formData.notify || false}
+                onCheckedChange={handleSwitchChange}
+              />
+            </div>
+            {formData.notify && (
+              <div className="mt-4">
+                <Label htmlFor="notificationRadius">Notification Radius</Label>
+                <Slider
+                  id="notificationRadius"
+                  min={1}
+                  max={MAX_RADIUS_RANGE}
+                  step={1}
+                  defaultValue={[formData.notificationRadius || 5]}
+                  value={[radius]}
+                  onValueChange={handleRadiusChange}
+                  className="mt-4"
+                />
+                <div className="text-sm text-gray-500 mt-2">
+                  {convertedRadius.toFixed(2)} {unit}
+                </div>
+                <div className="flex justify-end items-center gap-2 mt-2">
+                  <span>Kilometers</span>
+                  <Switch
+                    checked={unit === "miles"}
+                    onCheckedChange={handleUnitChange}
+                  />
+                  <span>Miles</span>
+                </div>
+              </div>
+            )}
           </div>
         </CardContent>
         <CardFooter>

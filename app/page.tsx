@@ -1,13 +1,13 @@
 "use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
-import { SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { JSX, SVGProps, useState } from "react";
 import Header from "@/components/Header";
 
 const BG_IMAGES = [
+  "bg.webp",
   "bg.jpeg",
   "bg2.webp",
   "bg3.webp",
@@ -61,11 +61,11 @@ export default function Home() {
               </div>
             </SignedIn>
             <SignedOut>
-              <SignInButton>
+              <a href="/sign-up">
                 <button className="px-4 py-2 rounded-full bg-[#131316] text-white text-sm font-semibold">
                   Get Started
                 </button>
-              </SignInButton>
+              </a>
             </SignedOut>
           </div>
         </section>
@@ -137,29 +137,6 @@ function HandshakeIcon(
       <path d="m21 3 1 11h-2" />
       <path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3" />
       <path d="M3 4h8" />
-    </svg>
-  );
-}
-
-function NetworkIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect x="16" y="16" width="6" height="6" rx="1" />
-      <rect x="2" y="16" width="6" height="6" rx="1" />
-      <rect x="9" y="2" width="6" height="6" rx="1" />
-      <path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3" />
-      <path d="M12 12V8" />
     </svg>
   );
 }

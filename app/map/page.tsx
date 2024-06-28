@@ -15,10 +15,17 @@ import {
 } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
 import { CSVLink } from "react-csv";
-import { Loader2 } from "lucide-react";
+import { Loader2, MoreHorizontal } from "lucide-react";
 import { useUser } from "@clerk/clerk-react";
 import { useRouter } from "next/navigation";
 import { Switch } from "@/components/ui/switch";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { MAX_RADIUS_RANGE } from "@/lib/constants";
 
 // Dynamically import the LeafletMap component
 const LeafletMap = dynamic(() => import("@/components/LeafletMap"), {
@@ -47,6 +54,10 @@ export default function MapPage() {
   const [unit, setUnit] = useState("km");
   const { isSignedIn, user, isLoaded } = useUser();
   const router = useRouter();
+
+  const handleMarkerDragEnd = (latlng: { lat: number; lng: number }) => {
+    setCurrentPosition({ lat: latlng.lat, lng: latlng.lng });
+  };
 
   useEffect(() => {
     if (user) {
@@ -102,7 +113,40 @@ export default function MapPage() {
         ? user.telegram
         : `@${user.telegram}`
       : "",
+    Interests: user.interests,
   }));
+
+  const handleEmail = async () => {
+    const emailResponse = await fetch(`/api/email/users-list`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        firstName: user?.firstName,
+        email: user?.emailAddresses[0].emailAddress,
+        users: users.map((user) => ({
+          name: `${user.firstName} ${user.lastName}`,
+          email: user.email,
+          username: user.telegram,
+          interests: user.interests,
+        })),
+      }),
+    });
+
+    if (emailResponse.ok) {
+      toast({
+        title: "Email Sent",
+        description: "The list of users has been sent to your email.",
+      });
+    } else {
+      toast({
+        title: "Email Failed",
+        description: "There was an error sending the email. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   if (!isLoaded || !currentPosition) {
     return (
@@ -145,7 +189,7 @@ export default function MapPage() {
                 </div>
                 <Slider
                   min={0}
-                  max={20}
+                  max={MAX_RADIUS_RANGE}
                   step={0.2}
                   defaultValue={[5]}
                   value={[radius]}
@@ -168,7 +212,8 @@ export default function MapPage() {
                 position={currentPosition}
                 radius={radius}
                 zoom={13}
-                fixedMarker
+                // fixedMarker
+                onMarkerDragEnd={handleMarkerDragEnd}
                 users={users}
               />
             )}
@@ -177,15 +222,25 @@ export default function MapPage() {
         <div className="border-l bg-muted/40 px-4 py-6">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold">Users</h2>
-            <Button variant="outline" size="sm">
-              <CSVLink
-                data={csvData}
-                filename={"users.csv"}
-                className="text-black"
-              >
-                Export
-              </CSVLink>
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <MoreHorizontal />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem>
+                  <CSVLink
+                    data={csvData}
+                    filename={"users.csv"}
+                    className="text-black"
+                  >
+                    Export
+                  </CSVLink>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleEmail}>Email</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <div className="mt-4 overflow-auto">
             <Table>
@@ -200,7 +255,7 @@ export default function MapPage() {
               <TableBody>
                 {isLoading ? (
                   <TableRow>
-                    <TableCell colSpan={3} className="text-center">
+                    <TableCell colSpan={4} className="text-center">
                       Loading...
                     </TableCell>
                   </TableRow>
