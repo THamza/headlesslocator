@@ -41,10 +41,7 @@ const SignUpQuiz = ({ onQuizSuccess }: { onQuizSuccess: () => void }) => {
 
   const onSubmit = (data: any) => {
     if (captchaValue) {
-      if (
-        data.answer1 === "douglas harding" &&
-        data.answer2 === "true seeing"
-      ) {
+      if (data.answer1 === "douglas harding" && data.answer2 === "in seeing") {
         onQuizSuccess();
       } else {
         setShowDialog(true);
@@ -112,10 +109,10 @@ const SignUpQuiz = ({ onQuizSuccess }: { onQuizSuccess: () => void }) => {
                         <input
                           {...field}
                           type="radio"
-                          value="richard lang"
+                          value="albert einstein"
                           className="mr-2"
                         />
-                        Richard Lang
+                        Albert Einstein
                       </label>
                       <br />
                       <label>
@@ -151,10 +148,10 @@ const SignUpQuiz = ({ onQuizSuccess }: { onQuizSuccess: () => void }) => {
                         <input
                           {...field}
                           type="radio"
-                          value="true seeing"
+                          value="in seeing"
                           className="mr-2"
                         />
-                        True Seeing
+                        In-Seeing
                       </label>
                       <br />
                       <label>
@@ -171,10 +168,10 @@ const SignUpQuiz = ({ onQuizSuccess }: { onQuizSuccess: () => void }) => {
                         <input
                           {...field}
                           type="radio"
-                          value="yoga"
+                          value="philanthropic work"
                           className="mr-2"
                         />
-                        Yoga
+                        Philanthropic Work
                       </label>
                     </div>
                   )}
@@ -217,7 +214,7 @@ const SignUpQuiz = ({ onQuizSuccess }: { onQuizSuccess: () => void }) => {
             >
               <FormItem>
                 <FormLabel>
-                  Enter your email and we will reach out to you asap
+                  Enter your email and we will reach out to you ASAP
                 </FormLabel>
                 <FormField
                   name="email"
@@ -244,7 +241,7 @@ const SignUpQuiz = ({ onQuizSuccess }: { onQuizSuccess: () => void }) => {
               </FormItem>
 
               <FormItem>
-                <FormLabel>Enter your message</FormLabel>
+                <FormLabel>Leave a message</FormLabel>
                 <FormField
                   name="message"
                   render={({ field }) => (

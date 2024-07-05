@@ -41,6 +41,8 @@ type User = {
   latitude: number;
   longitude: number;
   interests: string;
+  city: string;
+  state: string;
 };
 
 export default function MapPage() {
@@ -52,6 +54,7 @@ export default function MapPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [unit, setUnit] = useState("km");
+  const [isExportLoading, setIsExportLoading] = useState(false);
   const { isSignedIn, user, isLoaded } = useUser();
   const router = useRouter();
 
@@ -113,10 +116,13 @@ export default function MapPage() {
         ? user.telegram
         : `@${user.telegram}`
       : "",
+    city: user.city,
+    state: user.state,
     Interests: user.interests,
   }));
 
   const handleEmail = async () => {
+    setIsExportLoading(true);
     const emailResponse = await fetch(`/api/email/users-list`, {
       method: "POST",
       headers: {
@@ -129,10 +135,14 @@ export default function MapPage() {
           name: `${user.firstName} ${user.lastName}`,
           email: user.email,
           username: user.telegram,
+          city: user.city,
+          state: user.state,
           interests: user.interests,
         })),
       }),
     });
+
+    setIsExportLoading(false);
 
     if (emailResponse.ok) {
       toast({
@@ -224,8 +234,12 @@ export default function MapPage() {
             <h2 className="text-xl font-bold">Users</h2>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm">
-                  <MoreHorizontal />
+                <Button variant="outline" size="sm" disabled={isExportLoading}>
+                  {isExportLoading ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    <MoreHorizontal />
+                  )}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
@@ -235,10 +249,12 @@ export default function MapPage() {
                     filename={"users.csv"}
                     className="text-black"
                   >
-                    Export
+                    Export to spreadsheet
                   </CSVLink>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleEmail}>Email</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleEmail}>
+                  Send by Email
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -249,6 +265,8 @@ export default function MapPage() {
                   <TableHead>Name</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Telegram</TableHead>
+                  <TableHead>City</TableHead>
+                  <TableHead>State</TableHead>
                   <TableHead>Interests</TableHead>
                 </TableRow>
               </TableHeader>
@@ -271,6 +289,8 @@ export default function MapPage() {
                             : `@${user.telegram}`
                           : ""}
                       </TableCell>
+                      <TableCell>{user.city}</TableCell>
+                      <TableCell>{user.state}</TableCell>
                       <TableCell>{user.interests}</TableCell>
                     </TableRow>
                   ))

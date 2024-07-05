@@ -29,6 +29,8 @@ export async function POST(request: NextRequest) {
       latitude,
       longitude,
       interests,
+      city,
+      state,
     } = user;
     return {
       firstName,
@@ -38,6 +40,8 @@ export async function POST(request: NextRequest) {
       latitude,
       longitude,
       interests,
+      city,
+      state,
     };
   });
 

@@ -6,6 +6,8 @@ interface NearbyUsersListTemplateProps {
     name: string;
     email: string;
     username: string;
+    city: string;
+    state: string;
     interests: string;
   }>;
 }
@@ -66,6 +68,24 @@ export const NearbyUsersListTemplate: React.FC<
               backgroundColor: "#f2f2f2",
             }}
           >
+            City
+          </th>
+          <th
+            style={{
+              border: "1px solid #ddd",
+              padding: "8px",
+              backgroundColor: "#f2f2f2",
+            }}
+          >
+            State
+          </th>
+          <th
+            style={{
+              border: "1px solid #ddd",
+              padding: "8px",
+              backgroundColor: "#f2f2f2",
+            }}
+          >
             Interests
           </th>
         </tr>
@@ -81,6 +101,12 @@ export const NearbyUsersListTemplate: React.FC<
             </td>
             <td style={{ border: "1px solid #ddd", padding: "8px" }}>
               @{user.username}
+            </td>
+            <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+              {user.city}
+            </td>
+            <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+              {user.state}
             </td>
             <td style={{ border: "1px solid #ddd", padding: "8px" }}>
               {user.interests}

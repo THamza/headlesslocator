@@ -1,40 +1,31 @@
 "use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
-import { JSX, SVGProps, useState } from "react";
+import { JSX, SVGProps, useState, useEffect } from "react";
 import Header from "@/components/Header";
 
-const BG_IMAGES = [
-  "bg.webp",
-  "bg.jpeg",
-  "bg2.webp",
-  "bg3.webp",
-  "bg4.webp",
-  "bg5.jpg",
-  "bg6.jpg",
-  "bg7.webp",
-];
+const BG_IMAGES = ["bg3.webp", "bg.jpeg", "bg2.webp"];
 
 export default function Home() {
   const [bgIndex, setBgIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBgIndex((prevIndex) => (prevIndex + 1) % BG_IMAGES.length);
+    }, 10000); // Change image every 10 seconds
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <Button
-        onClick={() => {
-          setBgIndex((bgIndex + 1) % BG_IMAGES.length);
-        }}
-      >
-        Change Background ({bgIndex + 1}/{BG_IMAGES.length})
-      </Button>
       <main className="flex-1">
         <section
-          className="relative flex items-center justify-center min-h-screen bg-cover bg-center"
+          className="relative flex items-center justify-center min-h-screen bg-cover bg-center transition-all duration-1000"
           style={{ backgroundImage: `url(/${BG_IMAGES[bgIndex]})` }}
         >
-          <div className="absolute inset-0 bg-black/50" />
+          <div className="absolute inset-0 bg-black/50 transition-all duration-1000" />
           <div className="relative z-10 p-8 bg-black/60 shadow-lg flex flex-col items-center justify-center gap-6 text-center text-white rounded-2xl">
             {" "}
             <h1 className="text-4xl font-bold md:text-6xl">
@@ -72,7 +63,6 @@ export default function Home() {
 
         <section id="features" className="py-12 bg-muted">
           <div className="container px-4 mx-auto">
-            {/* <h2 className="mb-8 text-3xl font-bold text-center">Features</h2> */}
             <div className="grid gap-8 md:grid-cols-3">
               <div className="flex flex-col items-center gap-2 text-center">
                 <UsersIcon className="w-12 h-12 text-primary" />
