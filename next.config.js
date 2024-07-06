@@ -1,5 +1,6 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+const path = require("path");
+
+module.exports = {
   images: {
     remotePatterns: [
       {
@@ -21,6 +22,21 @@ const nextConfig = {
       },
     ];
   },
-};
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        fs: false,
+        net: false,
+        tls: false,
+        zlib: false,
+      };
+    }
 
-module.exports = nextConfig;
+    config.module.rules.push({
+      test: /\.node$/,
+      use: "node-loader",
+    });
+
+    return config;
+  },
+};
