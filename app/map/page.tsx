@@ -26,6 +26,11 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { MAX_RADIUS_RANGE } from "@/lib/constants";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 
 // Dynamically import the LeafletMap component
 const LeafletMap = dynamic(() => import("@/components/LeafletMap"), {
@@ -41,6 +46,7 @@ type User = {
   latitude: number;
   longitude: number;
   interests: string;
+  country: string;
   city: string;
   state: string;
 };
@@ -116,6 +122,7 @@ export default function MapPage() {
         ? user.telegram
         : `@${user.telegram}`
       : "",
+    country: user.country,
     city: user.city,
     state: user.state,
     Interests: user.interests,
@@ -135,6 +142,7 @@ export default function MapPage() {
           name: `${user.firstName} ${user.lastName}`,
           email: user.email,
           username: user.telegram,
+          country: user.country,
           city: user.city,
           state: user.state,
           interests: user.interests,
@@ -174,132 +182,142 @@ export default function MapPage() {
   const convertedRadius = unit === "km" ? radius : radius * 0.621371; // 1 Km = 0.621371 Miles
 
   return (
-    <div>
+    <div className="h-screen flex flex-col">
       <Header />
-      <div className="grid min-h-screen w-full grid-cols-[1fr_600px]">
-        <div className="relative">
-          <div className="absolute top-4 right-4 z-[1000]">
-            <Card className="w-[300px] bg-white">
-              <CardContent className="flex flex-col items-center gap-4">
-                <div className="flex items-center justify-between w-full mt-4">
-                  <span className="font-medium">Radius</span>
-                  <div className="flex items-center gap-2">
-                    Km
-                    <Switch
-                      checked={unit === "miles"}
-                      onCheckedChange={(checked) => {
-                        setUnit(checked ? "miles" : "km");
-                      }}
-                    />
-                    Miles
+      <ResizablePanelGroup direction="horizontal" className="flex-1">
+        <ResizablePanel defaultSize={50}>
+          <div className="relative h-full">
+            <div className="absolute top-4 right-4 z-[1000]">
+              <Card className="w-[300px] bg-white">
+                <CardContent className="flex flex-col items-center gap-4">
+                  <div className="flex items-center justify-between w-full mt-4">
+                    <span className="font-medium">Radius</span>
+                    <div className="flex items-center gap-2">
+                      Km
+                      <Switch
+                        checked={unit === "miles"}
+                        onCheckedChange={(checked) => {
+                          setUnit(checked ? "miles" : "km");
+                        }}
+                      />
+                      Miles
+                    </div>
                   </div>
-                </div>
-                <div className="text-center">
-                  {convertedRadius.toFixed(2)} {unit}
-                </div>
-                <Slider
-                  min={0}
-                  max={MAX_RADIUS_RANGE}
-                  step={0.2}
-                  defaultValue={[5]}
-                  value={[radius]}
-                  onValueChange={([value]) => {
-                    setRadius(value);
-                  }}
-                />
-                <Button
-                  onClick={handleApply}
-                  className="glow-button mt-2 flex w-full items-center bg-gradient-to-r from-indigo-400 to-cyan-400 text-white"
-                >
-                  Search
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-          <div className="relative z-0 h-full w-full">
-            {currentPosition && (
-              <LeafletMap
-                position={currentPosition}
-                radius={radius}
-                zoom={13}
-                // fixedMarker
-                onMarkerDragEnd={handleMarkerDragEnd}
-                users={users}
-              />
-            )}
-          </div>
-        </div>
-        <div className="border-l bg-muted/40 px-4 py-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold">Users</h2>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" disabled={isExportLoading}>
-                  {isExportLoading ? (
-                    <Loader2 className="animate-spin" />
-                  ) : (
-                    <MoreHorizontal />
-                  )}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem>
-                  <CSVLink
-                    data={csvData}
-                    filename={"users.csv"}
-                    className="text-black"
+                  <div className="text-center">
+                    {convertedRadius.toFixed(2)} {unit}
+                  </div>
+                  <Slider
+                    min={0}
+                    max={MAX_RADIUS_RANGE}
+                    step={0.2}
+                    defaultValue={[5]}
+                    value={[radius]}
+                    onValueChange={([value]) => {
+                      setRadius(value);
+                    }}
+                  />
+                  <Button
+                    onClick={handleApply}
+                    className="glow-button mt-2 flex w-full items-center bg-gradient-to-r from-indigo-400 to-cyan-400 text-white"
                   >
-                    Export to spreadsheet
-                  </CSVLink>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleEmail}>
-                  Send by Email
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                    Search
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+            <div className="relative z-0 h-full w-full">
+              {currentPosition && (
+                <LeafletMap
+                  position={currentPosition}
+                  radius={radius}
+                  zoom={13}
+                  onMarkerDragEnd={handleMarkerDragEnd}
+                  users={users}
+                />
+              )}
+            </div>
           </div>
-          <div className="mt-4 overflow-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Telegram</TableHead>
-                  <TableHead>City</TableHead>
-                  <TableHead>State</TableHead>
-                  <TableHead>Interests</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {isLoading ? (
+        </ResizablePanel>
+        <ResizableHandle />
+        <ResizablePanel defaultSize={50}>
+          <div className="border-l bg-muted/40 px-4 py-6 h-full">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-bold">Users</h2>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={isExportLoading}
+                  >
+                    {isExportLoading ? (
+                      <Loader2 className="animate-spin" />
+                    ) : (
+                      <MoreHorizontal />
+                    )}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem>
+                    <CSVLink
+                      data={csvData}
+                      filename={"users.csv"}
+                      className="text-black"
+                    >
+                      Export to spreadsheet
+                    </CSVLink>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleEmail}>
+                    Send by Email
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+            <div className="mt-4 overflow-auto h-full">
+              <Table>
+                <TableHeader>
                   <TableRow>
-                    <TableCell colSpan={4} className="text-center">
-                      Loading...
-                    </TableCell>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Telegram</TableHead>
+                    <TableHead>Country</TableHead>
+                    <TableHead>City</TableHead>
+                    <TableHead>State</TableHead>
+                    <TableHead>Interests</TableHead>
                   </TableRow>
-                ) : (
-                  users.map((user) => (
-                    <TableRow key={user.id}>
-                      <TableCell>{`${user.firstName} ${user.lastName}`}</TableCell>
-                      <TableCell>{user.email}</TableCell>
-                      <TableCell>
-                        {user.telegram
-                          ? user.telegram.startsWith("@")
-                            ? user.telegram
-                            : `@${user.telegram}`
-                          : ""}
+                </TableHeader>
+                <TableBody>
+                  {isLoading ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center">
+                        Loading...
                       </TableCell>
-                      <TableCell>{user.city}</TableCell>
-                      <TableCell>{user.state}</TableCell>
-                      <TableCell>{user.interests}</TableCell>
                     </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
+                  ) : (
+                    users.map((user) => (
+                      <TableRow key={user.id}>
+                        <TableCell>{`${user.firstName} ${user.lastName}`}</TableCell>
+                        <TableCell>{user.email}</TableCell>
+                        <TableCell>
+                          {user.telegram
+                            ? user.telegram.startsWith("@")
+                              ? user.telegram
+                              : `@${user.telegram}`
+                            : ""}
+                        </TableCell>
+                        <TableCell>{user.country}</TableCell>
+                        <TableCell>{user.city}</TableCell>
+                        <TableCell>{user.state}</TableCell>
+                        <TableCell>{user.interests}</TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
           </div>
-        </div>
-      </div>
+        </ResizablePanel>
+      </ResizablePanelGroup>
     </div>
   );
 }

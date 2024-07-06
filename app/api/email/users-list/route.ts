@@ -17,6 +17,7 @@ export async function POST(request: NextRequest) {
 Name: ${user.name}
 Email: ${user.email}
 Username: @${user.username}
+Country: ${user.country}
 City: ${user.city}
 State: ${user.state}
 Interests: ${user.interests}
