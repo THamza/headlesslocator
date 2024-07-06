@@ -25,18 +25,25 @@ module.exports = {
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {
+        ...config.resolve.fallback,
         fs: false,
         net: false,
         tls: false,
-        zlib: false,
+        crypto: require.resolve("crypto-browserify"),
+        stream: require.resolve("stream-browserify"),
+        zlib: require.resolve("browserify-zlib"),
       };
     }
 
-    config.module.rules.push({
-      test: /\.node$/,
-      use: "node-loader",
-    });
+    config.resolve.alias["zlib-sync"] = path.resolve(
+      __dirname,
+      "zlib-sync-stub.js"
+    );
 
     return config;
   },
+  experimental: {
+    serverComponentsExternalPackages: ["discord.js"],
+  },
+  productionBrowserSourceMaps: false,
 };
