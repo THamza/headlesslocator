@@ -35,11 +35,17 @@ export function DiscordIDTutorial() {
           </SheetDescription>
         </SheetHeader>
         <div className="grid gap-4 py-4">
+          <a
+            href="https://discord.gg/SBqhXqUC"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button className="w-full">Join our Discord Group</Button>
+          </a>
           <p>
             Step 1. In your Discord app, click on the user icon in the bottom
             left corner
           </p>
-
           <p>Step 2. Click on "Copy User ID"</p>
           <Image
             src="/discordIDStep1.png"
