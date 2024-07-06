@@ -29,6 +29,7 @@ import { debounce } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { MAX_RADIUS_RANGE } from "../lib/constants";
+import { DiscordIDTutorial } from "./DiscordIDTutorial";
 
 const LeafletMap = dynamic(() => import("./LeafletMap"), {
   ssr: false,
@@ -58,6 +59,7 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
     firstName: profile?.firstName || "",
     lastName: profile?.lastName || "",
     telegram: profile?.telegram || "",
+    discord: profile?.discord || "",
     interests: profile?.interests || "",
     address: profile?.address || "",
     country: profile?.country || "",
@@ -273,22 +275,41 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
               />
             </div>
           </div>
-          <div className="grid w-full gap-1.5">
-            <div className="flex flex-row items-center gap-1.5">
-              <Label htmlFor="telegramHandle">Telegram Username</Label>
-              <TelegramUsernameTutorial />
+          <div className="flex w-full gap-1.5">
+            <div className="flex-1 grid gap-1.5">
+              <div className="flex flex-row items-center gap-1.5">
+                <Label htmlFor="telegramHandle">Telegram Username</Label>
+                <TelegramUsernameTutorial />
+              </div>
+              <div className="flex flex-row items-center gap-1.5">
+                <p className="text-gray-500">@</p>
+                <Input
+                  id="telegramHandle"
+                  name="telegram"
+                  placeholder="Enter your Telegram username"
+                  value={formData.telegram || ""}
+                  onChange={handleChange}
+                />
+              </div>
             </div>
-            <div className="flex flex-row items-center gap-1.5">
-              <p className="text-gray-500">@</p>
-              <Input
-                id="telegramHandle"
-                name="telegram"
-                placeholder="Enter your Telegram username"
-                value={formData.telegram || ""}
-                onChange={handleChange}
-              />
+            <div className="flex-1 grid gap-1.5">
+              <div className="flex flex-row items-center gap-1.5">
+                <Label htmlFor="discordHandle">Discord ID</Label>
+                <DiscordIDTutorial />
+              </div>
+              <div className="flex flex-row items-center gap-1.5">
+                <p className="text-gray-500">#</p>
+                <Input
+                  id="discordHandle"
+                  name="discord"
+                  placeholder="Enter your Discord ID"
+                  value={formData.discord || ""}
+                  onChange={handleChange}
+                />
+              </div>
             </div>
           </div>
+
           <div className="grid w-full gap-1.5">
             <Label htmlFor="interests">Interest</Label>
             <Select

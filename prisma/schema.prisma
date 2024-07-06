@@ -27,6 +27,7 @@ model Profile {
   firstName  String?
   lastName   String?
   telegram   String?
+  discord    String?
   interests  String?
   address    String?
   zipCode    String?
@@ -49,6 +50,7 @@ model CityGroup {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
 
 model RegistrationRequest {
   id         String   @id @default(uuid())

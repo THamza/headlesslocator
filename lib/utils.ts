@@ -38,3 +38,21 @@ export const haversineDistance = (
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c; // Distance in km
 };
+
+export const getNearestCity = async (latitude: number, longitude: number) => {
+  const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return (
+      data.address.city ||
+      data.address.town ||
+      data.address.village ||
+      "Unknown"
+    );
+  } catch (error) {
+    console.error("Failed to fetch nearest city:", error);
+    return "Unknown";
+  }
+};

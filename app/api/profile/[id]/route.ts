@@ -1,12 +1,24 @@
+import {
+  Client,
+  GatewayIntentBits,
+  ChannelType,
+  GuildTextBasedChannel,
+} from "discord.js";
 import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
-import { Resend } from "resend";
-import { haversineDistance } from "@/lib/utils";
-import { NewUserNearbyTemplate } from "@/components/emailTemplates/newUserNearbyTemplate";
+import { haversineDistance, getNearestCity } from "@/lib/utils";
 
 const prisma = new PrismaClient();
-const resend = new Resend(process.env.RESEND_EMAIL_SERVICE_KEY);
+const discordClient = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildMessages,
+  ],
+});
+
+discordClient.login(process.env.DISCORD_BOT_TOKEN);
 
 export async function GET(
   request: NextRequest,
@@ -60,52 +72,57 @@ export async function POST(
     },
   });
 
-  // Notify nearby users if location is updated
-  if (isLocationUpdated) {
-    // Fetch all users who need to be notified and have valid coordinates
-    const nearbyUsers = await prisma.profile.findMany({
-      where: {
-        notify: true,
-        latitude: { not: null },
-        longitude: { not: null },
-        notificationRadius: { not: null },
-        NOT: {
-          clerkId: user.id,
-        },
-      },
+  // Handle Discord channel creation and user invitations
+  if (isLocationUpdated && cleanedData.discord) {
+    const nearestCity = await getNearestCity(
+      cleanedData.latitude,
+      cleanedData.longitude
+    );
+
+    console.log("Nearest city:", nearestCity);
+    console.log("DISCORD_GUILD_ID:", process.env.DISCORD_GUILD_ID);
+    console.log("DISCORD_CATEGORY_ID:", process.env.DISCORD_CATEGORY_ID);
+
+    let cityGroup = await prisma.cityGroup.findUnique({
+      where: { city: nearestCity },
     });
 
-    // Use Promise.all to send emails in parallel
-    await Promise.all(
-      nearbyUsers.map(async (nearbyUser) => {
-        const distance = haversineDistance(
-          cleanedData.latitude,
-          cleanedData.longitude,
-          nearbyUser.latitude!,
-          nearbyUser.longitude!
+    if (!cityGroup) {
+      if (!process.env.DISCORD_GUILD_ID || !process.env.DISCORD_CATEGORY_ID) {
+        return NextResponse.json(
+          { error: "Discord environment variables not set" },
+          { status: 500 }
         );
+      }
 
-        if (distance <= nearbyUser.notificationRadius!) {
-          const plainTextContent = `Hello, ${nearbyUser.firstName}!\n\nA new user has joined within your notification radius. Here are their details:\n\nName: ${cleanedData.firstName} ${cleanedData.lastName}\nEmail: ${cleanedData.email}\nUsername: ${cleanedData.telegram}\nInterests: ${cleanedData.interests}\n\nFeel free to reach out and connect with them.\n\nBest regards,\nHeadless CL Team`;
+      const guild = await discordClient.guilds.fetch(
+        process.env.DISCORD_GUILD_ID
+      );
+      const channel = await guild.channels.create({
+        name: nearestCity,
+        type: ChannelType.GuildText,
+        parent: process.env.DISCORD_CATEGORY_ID,
+      });
 
-          await resend.emails.send({
-            from: "Headless CL <headless-community-locator@resend.dev>",
-            to: [nearbyUser.email],
-            subject: "New User Nearby",
-            text: plainTextContent,
-            react: NewUserNearbyTemplate({
-              firstName: nearbyUser.firstName || "Unknown",
-              newUser: {
-                name: `${cleanedData.firstName} ${cleanedData.lastName}`,
-                email: cleanedData.email,
-                username: cleanedData.telegram,
-                interests: cleanedData.interests,
-              },
-            }),
-          });
-        }
-      })
+      cityGroup = await prisma.cityGroup.create({
+        data: {
+          city: nearestCity,
+          groupId: channel.id,
+        },
+      });
+    }
+
+    const guild = await discordClient.guilds.fetch(
+      process.env.DISCORD_GUILD_ID || "1259076591900692490"
     );
+    const member = await guild.members.fetch(cleanedData.discord);
+    const channel = (await guild.channels.fetch(
+      cityGroup.groupId
+    )) as GuildTextBasedChannel;
+
+    if (channel.isTextBased()) {
+      await channel.send(`Welcome ${member.user.username} to ${nearestCity}!`);
+    }
   }
 
   return NextResponse.json(profile);

@@ -16,7 +16,7 @@ export const getBaseUrl = () => {
 
   // Prod. We can't use the vercel env as it will refer to an internal url
   if (env === "production") {
-    return "https://app.opensponsor.ai/";
+    return process.env.NEXT_PUBLIC_APP_DOMAIN;
   }
 
   // Preview branch
