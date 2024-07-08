@@ -40,7 +40,7 @@ export function DiscordIDTutorial() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <Button className="w-full">Join our Discord Group</Button>
+            <Button className="w-full">Join us on Discord</Button>
           </a>
           <p>
             Step 1. In your Discord app, click on the user icon in the bottom

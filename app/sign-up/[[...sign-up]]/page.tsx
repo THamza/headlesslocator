@@ -3,6 +3,7 @@ import { useState } from "react";
 import { SignUp } from "@clerk/nextjs";
 import SignUpQuiz from "@/components/SignUpQuiz";
 import Header from "@/components/Header";
+import { Footer } from "@/components/footer";
 
 export default function Page() {
   const [showSignUp, setShowSignUp] = useState(false);
@@ -17,6 +18,7 @@ export default function Page() {
           <SignUpQuiz onQuizSuccess={() => setShowSignUp(true)} />
         )}
       </div>
+      <Footer />
     </>
   );
 }

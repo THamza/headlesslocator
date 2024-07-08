@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Profile } from "@prisma/client";
 import ProfileEdit from "@/components/ProfileEdit";
+import { Footer } from "@/components/footer";
 
 // Dynamically import the ProfileEdit component
 // const ProfileEdit = dynamic(() => import("@/components/ProfileEdit"), {
@@ -75,6 +76,7 @@ export default function ProfilePage() {
           <ProfileEdit profile={profile} />
         )}
       </main>
+      <Footer />
     </>
   );
 }
