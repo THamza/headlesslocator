@@ -184,7 +184,7 @@ export default function MapPage() {
   return (
     <div className="h-screen flex flex-col">
       <Header />
-      <ResizablePanelGroup direction="horizontal" className="flex-1">
+      <ResizablePanelGroup direction="vertical" className="flex-1">
         <ResizablePanel defaultSize={50}>
           <div className="relative h-full">
             <div className="absolute top-4 right-4 z-[1000]">
@@ -240,7 +240,7 @@ export default function MapPage() {
         </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel defaultSize={50}>
-          <div className="border-l bg-muted/40 px-4 py-6 h-full">
+          <div className="border-t bg-muted/40 px-4 py-6 h-full">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-bold">Users</h2>
               <DropdownMenu>
