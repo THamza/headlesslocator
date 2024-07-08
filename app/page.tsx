@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { JSX, SVGProps, useState, useEffect } from "react";
 import Header from "@/components/Header";
+import { Footer } from "@/components/footer";
 
 const BG_IMAGES = ["bg3.webp", "bg.jpeg", "bg2.webp"];
 
@@ -84,24 +85,7 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <footer className="flex items-center justify-between px-4 py-2 bg-muted">
-        <nav>
-          <Link href="#" className="mr-4 hover:underline" prefetch={false}>
-            Privacy Policy
-          </Link>
-          <Link href="#" className="hover:underline" prefetch={false}>
-            Terms of Service
-          </Link>
-        </nav>
-        <div>
-          <p className="text-sm text-muted-foreground">
-            <a href="https://www.thamza.com" target="_blank">
-              &copy;
-            </a>{" "}
-            2024 Headless Community Locator
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

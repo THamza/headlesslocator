@@ -31,6 +31,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import { Footer } from "@/components/footer";
 
 // Dynamically import the LeafletMap component
 const LeafletMap = dynamic(() => import("@/components/LeafletMap"), {
@@ -187,7 +188,7 @@ export default function MapPage() {
       <ResizablePanelGroup direction="vertical" className="flex-1">
         <ResizablePanel defaultSize={50}>
           <div className="relative h-full">
-            <div className="absolute top-4 right-4 z-[1000]">
+            <div className="absolute top-4 right-4 z-[50]">
               <Card className="w-[300px] bg-white">
                 <CardContent className="flex flex-col items-center gap-4">
                   <div className="flex items-center justify-between w-full mt-4">
@@ -318,6 +319,7 @@ export default function MapPage() {
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
+      <Footer />
     </div>
   );
 }

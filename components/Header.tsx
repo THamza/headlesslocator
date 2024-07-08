@@ -23,6 +23,14 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Label } from "@/components/ui/label";
+import { MessageCircleMore } from "lucide-react";
 
 const roboto = Roboto({
   weight: "700",
@@ -61,7 +69,7 @@ export default function Header() {
               <NavigationMenuItem>
                 <NavigationMenuLink asChild>
                   <Link href="/profile">
-                    <button className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-indigo-500 text-white text-sm font-semibold transition-transform transform hover:scale-105 shadow-lg">
+                    <button className="px-5 py-2 rounded-full bg-gradient-to-r from-blue-400 to-blue-500 text-white text-sm font-medium transition-transform transform hover:scale-105 hover:bg-gradient-to-r hover:from-blue-500 hover:to-blue-600 shadow-md">
                       Profile
                     </button>
                   </Link>
@@ -70,7 +78,7 @@ export default function Header() {
               <NavigationMenuItem>
                 <NavigationMenuLink asChild>
                   <Link href="/map">
-                    <button className="px-4 py-2 rounded-lg bg-gradient-to-r from-green-500 to-teal-500 text-white text-sm font-semibold transition-transform transform hover:scale-105 shadow-lg">
+                    <button className="px-5 py-2 rounded-full bg-gradient-to-r from-purple-400 to-purple-500 text-white text-sm font-medium transition-transform transform hover:scale-105 hover:bg-gradient-to-r hover:from-purple-500 hover:to-purple-600 shadow-md">
                       Community
                     </button>
                   </Link>
@@ -82,18 +90,43 @@ export default function Header() {
       </div>
       <div className="flex items-center gap-4">
         <SignedIn>
-          <Link href="https://discord.gg/SBqhXqUC" target="_blank">
-            <button className="flex items-center px-4 py-2 rounded-lg bg-gradient-to-r from-[#6E7EC4] to-blue-500 text-white text-sm font-semibold transition-transform transform hover:scale-105 shadow-lg">
-              <Image
-                src="/discordLogo.svg"
-                alt="Discord Logo"
-                width={20}
-                height={20}
-                className="mr-2"
-              />
-              Join Discord
-            </button>
-          </Link>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="ghost"
+                className="flex items-center px-4 py-2 rounded-lg text-sm font-semibold transition-transform transform hover:scale-105 mr-4"
+              >
+                <MessageCircleMore size={20} className="mr-2" />
+                Join Community Chatrooms
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80 p-4">
+              <div className="grid gap-4">
+                <div className="space-y-2">
+                  <h4 className="font-medium leading-none">
+                    Join the Community Chatrooms
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    Connect with fellow members of The Headless Way community in
+                    our local and global chatrooms. Share your experiences, ask
+                    questions, and become part of a supportive network.
+                  </p>
+                </div>
+                <Link href="https://discord.gg/SBqhXqUC" target="_blank">
+                  <Button className="flex items-center w-full px-4 py-2 rounded-lg bg-gradient-to-r from-[#6E7EC4] to-blue-500 text-white text-sm font-semibold transition-transform transform hover:scale-105 shadow-lg">
+                    <Image
+                      src="/discordLogo.svg"
+                      alt="Discord Logo"
+                      width={20}
+                      height={20}
+                      className="mr-2"
+                    />
+                    Join us on Discord
+                  </Button>
+                </Link>
+              </div>
+            </PopoverContent>
+          </Popover>
           <UserButton afterSignOutUrl="/sign-in" />
         </SignedIn>
         <SignedOut>

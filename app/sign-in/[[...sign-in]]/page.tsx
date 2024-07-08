@@ -1,3 +1,4 @@
+import { Footer } from "@/components/footer";
 import Header from "@/components/Header";
 import { SignIn } from "@clerk/nextjs";
 
@@ -8,6 +9,7 @@ export default function Page() {
       <div className="flex justify-center py-24">
         <SignIn routing="hash" />
       </div>
+      <Footer />
     </>
   );
 }
