@@ -240,8 +240,8 @@ export default function MapPage() {
           </div>
         </ResizablePanel>
         <ResizableHandle />
-        <ResizablePanel defaultSize={50}>
-          <div className="border-t bg-muted/40 px-4 py-6 h-full">
+        <ResizablePanel defaultSize={50} className="flex-1 flex flex-col">
+          <div className="border-t bg-muted/40 px-4 py-6 flex-1 flex flex-col overflow-hidden">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-bold">Users</h2>
               <DropdownMenu>
@@ -274,7 +274,7 @@ export default function MapPage() {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-            <div className="mt-4 overflow-auto h-full">
+            <div className="mt-4 overflow-auto flex-1">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -290,7 +290,7 @@ export default function MapPage() {
                 <TableBody>
                   {isLoading ? (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center">
+                      <TableCell colSpan={7} className="text-center">
                         Loading...
                       </TableCell>
                     </TableRow>
