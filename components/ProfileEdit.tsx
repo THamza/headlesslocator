@@ -324,7 +324,9 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
                   <SelectLabel>Interests</SelectLabel>
                   <SelectItem value="meeting">In-person meetings</SelectItem>
                   <SelectItem value="group-calls">Group Calls</SelectItem>
-                  <SelectItem value="both">Calls and meetings</SelectItem>
+                  <SelectItem value="calls-and-meetings">
+                    Calls and meetings
+                  </SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
