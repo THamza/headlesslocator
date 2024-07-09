@@ -319,7 +319,6 @@ export default function MapPage() {
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
-      <Footer />
     </div>
   );
 }
