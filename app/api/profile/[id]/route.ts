@@ -1,35 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
-import { haversineDistance, getNearestCity } from "@/lib/utils";
+import { handleDiscordChannelAssignment } from "@/app/utils/discord";
 
 const prisma = new PrismaClient();
-
-let discordClient: any = null;
-
-async function getDiscordClient() {
-  if (discordClient) return discordClient;
-
-  const { Client, GatewayIntentBits, ChannelType } = await import("discord.js");
-
-  discordClient = new Client({
-    intents: [
-      GatewayIntentBits.Guilds,
-      GatewayIntentBits.GuildMembers,
-      GatewayIntentBits.GuildMessages,
-    ],
-  });
-
-  try {
-    await discordClient.login(process.env.DISCORD_BOT_TOKEN);
-    // console.log(`Logged in as ${discordClient.user?.tag}!`);
-  } catch (error) {
-    console.error("Error logging in to Discord:", error);
-    throw error;
-  }
-
-  return discordClient;
-}
 
 export async function GET(
   request: NextRequest,
@@ -76,6 +50,8 @@ export async function POST(
       where: { clerkId: user.id },
     });
 
+    const isLocationSet = cleanedData.latitude && cleanedData.longitude;
+
     const isLocationUpdated = existingProfile
       ? existingProfile.latitude !== cleanedData.latitude ||
         existingProfile.longitude !== cleanedData.longitude
@@ -91,60 +67,8 @@ export async function POST(
       },
     });
 
-    if (isLocationUpdated && cleanedData.discord) {
-      const discord = await getDiscordClient();
-      const { ChannelType } = await import("discord.js");
-
-      const nearestCity = await getNearestCity(
-        cleanedData.latitude,
-        cleanedData.longitude
-      );
-
-      let cityGroup = await prisma.cityGroup.findUnique({
-        where: { city: nearestCity },
-      });
-
-      if (!cityGroup) {
-        if (!process.env.DISCORD_GUILD_ID || !process.env.DISCORD_CATEGORY_ID) {
-          return NextResponse.json(
-            { error: "Discord environment variables not set" },
-            { status: 500 }
-          );
-        }
-
-        const guild = await discord.guilds.fetch(process.env.DISCORD_GUILD_ID);
-        const channel = await guild.channels.create({
-          name: nearestCity,
-          type: ChannelType.GuildText,
-          parent: process.env.DISCORD_CATEGORY_ID,
-        });
-
-        cityGroup = await prisma.cityGroup.create({
-          data: {
-            city: nearestCity,
-            groupId: channel.id,
-          },
-        });
-      }
-
-      const guild = await discord.guilds.fetch(
-        process.env.DISCORD_GUILD_ID || "1259076591900692490"
-      );
-      const member = await guild.members.fetch(cleanedData.discord);
-      const channel = await guild.channels.fetch(cityGroup.groupId);
-
-      if (
-        channel &&
-        (channel.type === ChannelType.GuildText ||
-          channel.type === ChannelType.PublicThread ||
-          channel.type === ChannelType.PrivateThread)
-      ) {
-        await channel.send(
-          `Welcome ${member.user.username} to ${nearestCity}!`
-        );
-      } else {
-        console.error("Channel not found or invalid type:", cityGroup.groupId);
-      }
+    if (isLocationSet && isLocationUpdated && cleanedData.discord) {
+      await handleDiscordChannelAssignment(cleanedData);
     }
 
     return NextResponse.json(profile);

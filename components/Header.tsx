@@ -51,16 +51,14 @@ export default function Header() {
         <Link href="https://headless.org/" prefetch={false} target="_blank">
           <Image
             src="/theheadlessway.png"
-            alt="Community Locator"
+            alt="Friend Finder"
             width={35}
             height={35}
           />
         </Link>
         <div className="text-lg mr-12 ml-3">
           <Link href="/">
-            <p style={{ fontFamily: roboto.style.fontFamily }}>
-              Community Locator
-            </p>
+            <p style={{ fontFamily: roboto.style.fontFamily }}>Friend Finder</p>
           </Link>
         </div>
         <SignedIn>
@@ -112,7 +110,7 @@ export default function Header() {
                     questions, and become part of a supportive network.
                   </p>
                 </div>
-                <Link href="https://discord.gg/SBqhXqUC" target="_blank">
+                <Link href="https://discord.gg/nNmDFVQTHP" target="_blank">
                   <Button className="flex items-center w-full px-4 py-2 rounded-lg bg-gradient-to-r from-[#6E7EC4] to-blue-500 text-white text-sm font-semibold transition-transform transform hover:scale-105 shadow-lg">
                     <Image
                       src="/discordLogo.svg"
