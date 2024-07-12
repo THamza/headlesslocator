@@ -15,9 +15,9 @@ const fontSans = FontSans({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://theheadlessway.org/"),
-  title: "Headless Community Locator",
+  title: "Headless Friend Finder",
   description:
-    "A Simple Headless Community Locator App built with Next.js, Clerk, and Leaflet allowing users to view and share their location with others.",
+    "A Simple Headless Community Finder App built with Next.js, Clerk, and Leaflet allowing users to view and share their location with others.",
   openGraph: { images: ["/og.png"] },
 };
 

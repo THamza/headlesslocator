@@ -9,21 +9,21 @@ const TermsOfService = () => {
       <Header />
       <div className="max-w-4xl mx-auto py-12 px-6">
         <h1 className="text-3xl font-bold mb-6">
-          Terms of Service for Headless Community Locator
+          Terms of Service for Headless Friend Finder
         </h1>
         <p className="mb-4">Effective Date: 06/07/2024</p>
 
         <section className="mb-6">
           <h2 className="text-2xl font-semibold mb-4">
-            Welcome to Headless Community Locator
+            Welcome to Headless Friend Finder
           </h2>
           <p className="mb-2">
-            Welcome to Headless Community Locator ("we," "our," "us"). By
-            accessing or using our web application, cl.headless.org (the
-            "Service"), you agree to comply with and be bound by these Terms of
-            Service ("Terms"). These Terms govern your use of the Service, so
-            please read them carefully. If you do not agree to these Terms, you
-            should not use the Service.
+            Welcome to Headless Friend Finder ("we," "our," "us"). By accessing
+            or using our web application, cl.headless.org (the "Service"), you
+            agree to comply with and be bound by these Terms of Service
+            ("Terms"). These Terms govern your use of the Service, so please
+            read them carefully. If you do not agree to these Terms, you should
+            not use the Service.
           </p>
         </section>
 
@@ -32,9 +32,9 @@ const TermsOfService = () => {
             1. Description of Service
           </h2>
           <p className="mb-2">
-            Headless Community Locator is a web application designed to
-            facilitate connections among members of the Headless community. The
-            Service allows users to:
+            Headless Friend Finder is a web application designed to facilitate
+            connections among members of the Headless community. The Service
+            allows users to:
           </p>
           <ul className="list-disc ml-6 mb-2">
             <li>
@@ -63,7 +63,7 @@ const TermsOfService = () => {
             <strong>Website:</strong> headless.org
           </p>
           <p className="mb-2">
-            <strong>Contact Email:</strong> email@placeholder.com
+            <strong>Contact Email:</strong> headless.developer@outlook.com
           </p>
         </section>
 
@@ -90,8 +90,7 @@ const TermsOfService = () => {
             4. Account Information
           </h2>
           <p className="mb-2">
-            When creating an account with Headless Community Locator, you agree
-            to:
+            When creating an account with Headless Friend Finder, you agree to:
           </p>
           <ul className="list-disc ml-6 mb-2">
             <li>
@@ -119,7 +118,7 @@ const TermsOfService = () => {
           <h2 className="text-2xl font-semibold mb-4">5. User Conduct</h2>
           <p className="mb-2">
             To maintain a respectful and safe environment within the Headless
-            Community Locator, you agree to the following conduct guidelines:
+            Friend Finder, you agree to the following conduct guidelines:
           </p>
           <ul className="list-disc ml-6 mb-2">
             <li>
@@ -168,9 +167,9 @@ const TermsOfService = () => {
           <p className="mb-2">
             <strong>Service Content:</strong> The Service and its original
             content, features, and functionality are and will remain the
-            exclusive property of Headless Community Locator and its licensors.
-            This includes but is not limited to software, text, graphics, logos,
-            and trademarks.
+            exclusive property of Headless Friend Finder and its licensors. This
+            includes but is not limited to software, text, graphics, logos, and
+            trademarks.
           </p>
         </section>
 
@@ -246,10 +245,10 @@ const TermsOfService = () => {
           </p>
           <p className="mb-2">
             <strong>Limitation of Liability:</strong> In no event shall Headless
-            Community Locator, its affiliates, or its licensors be liable for
-            any indirect, incidental, special, consequential, or punitive
-            damages, including without limitation, loss of profits, data, use,
-            goodwill, or other intangible losses, resulting from:
+            Friend Finder, its affiliates, or its licensors be liable for any
+            indirect, incidental, special, consequential, or punitive damages,
+            including without limitation, loss of profits, data, use, goodwill,
+            or other intangible losses, resulting from:
           </p>
           <ul className="list-disc ml-6 mb-2">
             <li>Your use or inability to use the Service.</li>
@@ -291,10 +290,10 @@ const TermsOfService = () => {
           <h2 className="text-2xl font-semibold mb-4">12. Governing Law</h2>
           <p className="mb-2">
             These Terms shall be governed and construed in accordance with the
-            laws of the jurisdiction in which Headless Community Locator
-            operates, without regard to its conflict of law principles. Any
-            legal action or proceeding arising under these Terms will be brought
-            exclusively in the courts of that jurisdiction.
+            laws of the jurisdiction in which Headless Friend Finder operates,
+            without regard to its conflict of law principles. Any legal action
+            or proceeding arising under these Terms will be brought exclusively
+            in the courts of that jurisdiction.
           </p>
         </section>
 
@@ -304,7 +303,7 @@ const TermsOfService = () => {
             If you have any questions about these Terms, please contact us at:
           </p>
           <p className="mb-2">
-            <strong>Email:</strong> email@placeholder.com
+            <strong>Email:</strong> headless.developer@outlook.com
           </p>
           <p className="mb-2">
             By using the Service, you acknowledge that you have read,

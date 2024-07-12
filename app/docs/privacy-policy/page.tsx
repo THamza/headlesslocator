@@ -9,19 +9,19 @@ const PrivacyPolicy = () => {
 
       <div className="max-w-4xl mx-auto py-12 px-6">
         <h1 className="text-3xl font-bold mb-6">
-          Privacy Policy for Headless Community Locator
+          Privacy Policy for Headless Friend Finder
         </h1>
         <p className="mb-4">Effective Date: 06/07/2024</p>
 
         <section className="mb-6">
           <h2 className="text-2xl font-semibold mb-4">1. Introduction</h2>
           <p className="mb-2">
-            Welcome to Headless Community Locator ("we," "our," "us"). Your
-            privacy is critically important to us. We are dedicated to
-            safeguarding and preserving your privacy when you visit our website,
-            cl.headless.org, or communicate with us. This Privacy Policy
-            provides a detailed explanation as to how we may use, collect, and
-            safeguard the personal data that you provide to us.
+            Welcome to Headless Friend Finder ("we," "our," "us"). Your privacy
+            is critically important to us. We are dedicated to safeguarding and
+            preserving your privacy when you visit our website, cl.headless.org,
+            or communicate with us. This Privacy Policy provides a detailed
+            explanation as to how we may use, collect, and safeguard the
+            personal data that you provide to us.
           </p>
         </section>
 
@@ -143,8 +143,8 @@ const PrivacyPolicy = () => {
           </ul>
           <p className="mb-2">
             To exercise any of these rights, please contact us at
-            [email@placeholder.com]. We will respond to your request in a timely
-            manner and ensure that your rights are fully respected.
+            [headless.developer@outlook.com]. We will respond to your request in
+            a timely manner and ensure that your rights are fully respected.
           </p>
         </section>
 
@@ -197,7 +197,7 @@ const PrivacyPolicy = () => {
             personal data, please contact us at:
           </p>
           <p className="mb-2">
-            <strong>Email:</strong> [email@placeholder.com]
+            <strong>Email:</strong> [headless.developer@outlook.com]
           </p>
           <p className="mb-2">
             We are here to assist you and ensure that your privacy is protected.

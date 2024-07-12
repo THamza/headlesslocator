@@ -9,7 +9,7 @@ export function Footer() {
         className="flex gap-2 font-medium text-[0.8125rem] items-center"
       >
         <p className="text-sm text-muted-foreground">
-          Headless Community Locator{" "}
+          Headless Friend Finder{" "}
           <a href="https://www.thamza.com" target="_blank">
             &copy;
           </a>{" "}
