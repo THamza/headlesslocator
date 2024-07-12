@@ -1,71 +1,90 @@
-import { SquareTerminal } from "lucide-react";
-import Link from "next/link";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Loader2, Unplug } from "lucide-react";
+import { toast } from "./ui/use-toast";
 
-export function Footer() {
+type DiscordConnectProps = {
+  email: string;
+  discordId: string;
+  onDisconnect: () => void;
+  onConnect: () => void;
+};
+
+export default function DiscordConnect({
+  email,
+  discordId,
+  onDisconnect,
+  onConnect,
+}: DiscordConnectProps) {
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [isDisconnecting, setIsDisconnecting] = useState(false);
+
+  const handleDiscordConnect = () => {
+    setIsConnecting(true);
+    const clientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID;
+    const redirectUri = process.env.NEXT_PUBLIC_DISCORD_REDIRECT_URI;
+
+    if (!clientId || !redirectUri) {
+      console.error("Environment variables for Discord OAuth are not set");
+      return;
+    }
+
+    const state = email; // Pass user's email as state
+    window.location.href = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(
+      redirectUri
+    )}&response_type=code&scope=identify&state=${encodeURIComponent(state)}`;
+  };
+
+  const handleDiscordDisconnect = async () => {
+    setIsDisconnecting(true);
+    const res = await fetch(`/api/discord/disconnect`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    if (res.ok) {
+      onDisconnect();
+      toast({
+        title: "Discord disconnected",
+        description: "Your Discord account has been disconnected successfully.",
+      });
+    } else {
+      toast({
+        title: "Discord disconnect failed",
+        description: "There was an error disconnecting your Discord account.",
+        variant: "destructive",
+      });
+    }
+
+    setIsDisconnecting(false);
+  };
+
   return (
-    <footer className="max-w-[75rem] bg-white w-full mx-auto pt-6 border-t border-[#EEEEF0] flex justify-between pb-8">
-      <a
-        href="#"
-        className="flex gap-2 font-medium text-[0.8125rem] items-center"
-      >
-        <p className="text-sm text-muted-foreground">
-          Headless Community Locator{" "}
-          <a href="https://www.thamza.com" target="_blank">
-            &copy;
-          </a>{" "}
-          {new Date().getFullYear()}
-        </p>
-      </a>
-      <ul className="flex gap-2 mx-auto">
-        <li>
-          <Link
-            href="/docs/privacy-policy"
-            className="flex items-center gap-2 font-medium text-[0.8125rem] rounded-full px-3 py-2 hover:bg-gray-100"
-          >
-            Privacy Policy
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/docs/terms-of-service"
-            className="flex items-center gap-2 font-medium text-[0.8125rem] rounded-full px-3 py-2 hover:bg-gray-100"
-          >
-            Terms of Service
-          </Link>
-        </li>
-      </ul>
-      <ul className="flex gap-2">
-        <li>
-          <a
-            href="mailto:headless.cl@thamza.com"
-            target="_blank"
-            className="flex items-center gap-2 font-medium text-[0.8125rem] rounded-full px-3 py-2 hover:bg-gray-100"
-          >
-            <SquareTerminal size={20} className="mr-2" />
-            Dev
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <rect x="2" y="2" width="12" height="12" rx="3" fill="#EEEEF0" />
-              <path
-                d="M5.75 10.25L10.25 5.75M10.25 5.75H6.75M10.25 5.75V9.25"
-                stroke="#9394A1"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </a>
-        </li>
-        <li>
+    <div className="flex flex-col items-start space-y-2">
+      {discordId ? (
+        <Button
+          variant="destructive"
+          onClick={handleDiscordDisconnect}
+          disabled={isDisconnecting}
+        >
+          {isDisconnecting ? (
+            <Loader2 className="animate-spin" />
+          ) : (
+            "Disconnect Discord"
+          )}
+        </Button>
+      ) : (
+        <>
+          <p className="text-gray-500">
+            Step 1: Join our Discord server using the link below:
+          </p>
           <a
             href="https://discord.gg/nNmDFVQTHP"
             target="_blank"
-            className="flex items-center gap-2 font-medium text-[0.8125rem] rounded-full px-3 py-2 hover:bg-gray-100"
+            className="flex items-center gap-2 font-medium text-[0.8125rem] rounded-full px-3 py-2 hover:bg-gray-100 justify-center"
           >
             <svg
               width="16"
@@ -86,7 +105,7 @@ export function Footer() {
                 </clipPath>
               </defs>
             </svg>
-            Discord
+            Join our discord server
             <svg
               width="16"
               height="16"
@@ -104,33 +123,25 @@ export function Footer() {
               />
             </svg>
           </a>
-        </li>
-        <li>
-          <a
-            href="Headless.org"
-            target="_blank"
-            className="flex items-center gap-2 font-medium text-[0.8125rem] rounded-full px-3 py-2 hover:bg-gray-100"
+          <p className="text-gray-500">
+            Step 2: Connect your Discord account after joining the server
+          </p>
+          <Button
+            onClick={handleDiscordConnect}
+            disabled={isConnecting}
+            className="rounded-lg bg-gradient-to-r from-[#6E7EC4] to-blue-500 text-white text-sm font-semibold transition-transform transform hover:scale-105 shadow-lg"
           >
-            Headless.org
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <rect x="2" y="2" width="12" height="12" rx="3" fill="#EEEEF0" />
-              <path
-                d="M5.75 10.25L10.25 5.75M10.25 5.75H6.75M10.25 5.75V9.25"
-                stroke="#9394A1"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </a>
-        </li>
-      </ul>
-    </footer>
+            {isConnecting ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              <>
+                <Unplug size={20} className="mr-2" />
+                Connect Discord Account
+              </>
+            )}
+          </Button>
+        </>
+      )}
+    </div>
   );
 }

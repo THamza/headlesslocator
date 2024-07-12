@@ -41,6 +41,7 @@ model Profile {
   notificationRadius Float?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  UserCityGroups UserCityGroup[]
 }
 
 model CityGroup {
@@ -49,8 +50,20 @@ model CityGroup {
   groupId   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  UserCityGroups UserCityGroup[]
 }
 
+model UserCityGroup {
+  id         String   @id @default(uuid())
+  userId     String
+  cityGroupId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  Profile    Profile  @relation(fields: [userId], references: [id])
+  CityGroup  CityGroup @relation(fields: [cityGroupId], references: [id])
+
+  @@unique([userId, cityGroupId])
+}
 
 model RegistrationRequest {
   id         String   @id @default(uuid())

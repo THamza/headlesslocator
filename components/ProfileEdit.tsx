@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Card,
   CardHeader,
@@ -29,7 +29,8 @@ import { debounce } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { MAX_RADIUS_RANGE } from "../lib/constants";
-import { DiscordIDTutorial } from "./DiscordIDTutorial";
+// import { DiscordIDTutorial } from "./DiscordIDTutorial";
+import DiscordConnect from "./DiscordConnect";
 
 const LeafletMap = dynamic(() => import("./LeafletMap"), {
   ssr: false,
@@ -85,60 +86,57 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
     setFormData({ ...formData, interests: value });
   };
 
-  const handleAddressSearch = useCallback(async () => {
-    const { city, state, zipCode, country } = formDataRef.current;
-    if (!city && !state && !zipCode && !country) return;
+  const handleAddressSearch = useRef(
+    debounce(async () => {
+      const { city, state, zipCode, country } = formDataRef.current;
+      if (!city && !state && !zipCode && !country) return;
 
-    setIsAddressSearchLoading(true);
+      setIsAddressSearchLoading(true);
 
-    const params = new URLSearchParams({
-      city: city || "",
-      state: state || "",
-      postalcode: zipCode || "",
-      country: country || "",
-      format: "json",
-    });
+      const params = new URLSearchParams({
+        city: city || "",
+        state: state || "",
+        postalcode: zipCode || "",
+        country: country || "",
+        format: "json",
+      });
 
-    const url = `https://nominatim.openstreetmap.org/search?${params.toString()}`;
+      const url = `https://nominatim.openstreetmap.org/search?${params.toString()}`;
 
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-      setIsAddressSearchLoading(false);
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        setIsAddressSearchLoading(false);
 
-      if (data && data.length > 0) {
-        const { lat, lon } = data[0];
-        setPosition({ lat: parseFloat(lat), lng: parseFloat(lon) });
-      } else {
+        if (data && data.length > 0) {
+          const { lat, lon } = data[0];
+          setPosition({ lat: parseFloat(lat), lng: parseFloat(lon) });
+        } else {
+          toast({
+            title: "Address not found",
+            description: "Could not find the address. Please try again.",
+            variant: "destructive",
+          });
+        }
+      } catch (error) {
+        setIsAddressSearchLoading(false);
+        console.error("Failed to fetch the address:", error);
         toast({
-          title: "Address not found",
-          description: "Could not find the address. Please try again.",
+          title: "Error",
+          description:
+            "Failed to fetch the address. Please check your network connection and try again.",
           variant: "destructive",
         });
       }
-    } catch (error) {
-      setIsAddressSearchLoading(false);
-      console.error("Failed to fetch the address:", error);
-      toast({
-        title: "Error",
-        description:
-          "Failed to fetch the address. Please check your network connection and try again.",
-        variant: "destructive",
-      });
-    }
-  }, []);
-
-  const debouncedAddressSearch = useMemo(
-    () => debounce(handleAddressSearch, 1500),
-    []
-  );
+    }, 1500)
+  ).current;
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     if (["city", "state", "zipCode", "country"].includes(e.target.name)) {
-      debouncedAddressSearch();
+      handleAddressSearch();
     }
   };
 
@@ -225,7 +223,7 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
     <Card className="w-full max-w-2xl shadow-lg">
       <form onSubmit={handleSubmit}>
         <CardHeader>
-          <div className=" flex justify-between items-center w-full">
+          <div className="flex justify-between items-center w-full">
             <div>
               <CardTitle>Profile Setup</CardTitle>
               <CardDescription>
@@ -235,7 +233,7 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
             <div>
               <Button
                 type="submit"
-                className="w-full bg-black text-white hover:bg-gray-800 mt-8"
+                className="w-full mt-8 bg-blue-500 text-white hover:bg-blue-600"
                 disabled={isUpdateLoading}
               >
                 {isUpdateLoading ? (
@@ -249,6 +247,7 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
         </CardHeader>
 
         <CardContent className="space-y-6">
+          <h2 className="text-lg font-semibold">Account Details</h2>
           <div className="grid w-full gap-1.5">
             <Label htmlFor="email">Email</Label>
             <Input id="email" value={formData.email} disabled />
@@ -275,41 +274,6 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
               />
             </div>
           </div>
-          <div className="flex w-full gap-1.5">
-            <div className="flex-1 grid gap-1.5">
-              <div className="flex flex-row items-center gap-1.5">
-                <Label htmlFor="telegramHandle">Telegram Username</Label>
-                <TelegramUsernameTutorial />
-              </div>
-              <div className="flex flex-row items-center gap-1.5">
-                <p className="text-gray-500">@</p>
-                <Input
-                  id="telegramHandle"
-                  name="telegram"
-                  placeholder="Enter your Telegram username"
-                  value={formData.telegram || ""}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-            <div className="flex-1 grid gap-1.5">
-              <div className="flex flex-row items-center gap-1.5">
-                <Label htmlFor="discordHandle">Discord ID</Label>
-                <DiscordIDTutorial />
-              </div>
-              <div className="flex flex-row items-center gap-1.5">
-                <p className="text-gray-500">#</p>
-                <Input
-                  id="discordHandle"
-                  name="discord"
-                  placeholder="Enter your Discord ID"
-                  value={formData.discord || ""}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-          </div>
-
           <div className="grid w-full gap-1.5">
             <Label htmlFor="interests">Interest</Label>
             <Select
@@ -332,8 +296,50 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
             </Select>
           </div>
           <Separator className="my-4" />
+          <h2 className="text-lg font-semibold">
+            Account Connections (optional)
+          </h2>
+          <div className="flex w-full gap-6 h-fit">
+            <div className="flex-1">
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-1.5">
+                  <Label htmlFor="discordHandle">Discord</Label>
+                </div>
+                <DiscordConnect
+                  email={formData.email as string}
+                  discordId={formData.discord || ""}
+                  onDisconnect={() => setFormData({ ...formData, discord: "" })}
+                  onConnect={() =>
+                    setFormData({ ...formData, discord: "connected" })
+                  }
+                />
+              </div>
+            </div>
+
+            <Separator orientation="vertical" className="mx-4 h-auto" />
+            <div className="flex-1">
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-1.5">
+                  <Label htmlFor="telegramHandle">Telegram Username</Label>
+                  <TelegramUsernameTutorial />
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <p className="text-gray-500">@</p>
+                  <Input
+                    id="telegramHandle"
+                    name="telegram"
+                    placeholder="Enter your Telegram username"
+                    value={formData.telegram || ""}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <Separator className="my-4" />
           <div className="grid w-full gap-1.5">
-            <h2 className="text-lg font-semibold">Location</h2>
+            <h2 className="text-lg font-semibold">Location (optional)</h2>
             <div className="grid w-full gap-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -396,7 +402,9 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
           </div>
           <h2 className="text-lg font-semibold mt-8 text-white">.</h2>
           <Separator className="my-4" />
-          <h2 className="text-lg font-semibold mt-8">Email Notifications</h2>
+          <h2 className="text-lg font-semibold mt-8">
+            Email Notifications (optional)
+          </h2>
           <div className="grid w-full gap-1.5">
             <div className="flex items-center gap-2">
               <Label htmlFor="notify">
@@ -439,7 +447,7 @@ export default function ProfileEdit({ profile }: ProfileEditProps) {
         <CardFooter>
           <Button
             type="submit"
-            className="w-full bg-black text-white hover:bg-gray-800 mt-8"
+            className="w-full mt-8 bg-blue-500 text-white hover:bg-blue-600"
             disabled={isUpdateLoading}
           >
             {isUpdateLoading ? (

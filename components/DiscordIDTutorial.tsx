@@ -36,7 +36,7 @@ export function DiscordIDTutorial() {
         </SheetHeader>
         <div className="grid gap-4 py-4">
           <a
-            href="https://discord.gg/SBqhXqUC"
+            href="https://discord.gg/nNmDFVQTHP"
             target="_blank"
             rel="noopener noreferrer"
           >
