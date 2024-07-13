@@ -218,6 +218,10 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to see the a
 - **lint**: Run ESLint to check for linting errors.
 - **postinstall**: Generate Prisma Client after dependencies are installed.
 
+## TODO:
+
+- Code cleaning, componizing and refactoring
+
 ## Contributing
 
 Contributions are welcome! Please open an issue or submit a pull request if you have any improvements or suggestions.
