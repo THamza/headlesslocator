@@ -2,8 +2,8 @@
 import { useState } from "react";
 import { SignUp } from "@clerk/nextjs";
 import SignUpQuiz from "@/components/SignUpQuiz";
-import Header from "@/components/Header";
-import { Footer } from "@/components/footer";
+import Header from "@/components/layout/Header";
+import { Footer } from "@/components/layout/footer";
 
 export default function Page() {
   const [showSignUp, setShowSignUp] = useState(false);

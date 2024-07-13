@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import Header from "@/components/Header";
+import Header from "@/components/layout/Header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
@@ -31,10 +31,9 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { Footer } from "@/components/footer";
 
 // Dynamically import the LeafletMap component
-const LeafletMap = dynamic(() => import("@/components/LeafletMap"), {
+const LeafletMap = dynamic(() => import("@/components/utils/LeafletMap"), {
   ssr: false,
 });
 

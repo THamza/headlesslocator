@@ -1,5 +1,5 @@
-import { Footer } from "@/components/footer";
-import Header from "@/components/Header";
+import { Footer } from "@/components/layout/footer";
+import Header from "@/components/layout/Header";
 import React from "react";
 
 const PrivacyPolicy = () => {
