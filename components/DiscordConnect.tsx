@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2, Unplug } from "lucide-react";
+import { Link, Loader2, Unplug } from "lucide-react";
 import { toast } from "./ui/use-toast";
 
 type DiscordConnectProps = {
@@ -73,7 +73,10 @@ export default function DiscordConnect({
           {isDisconnecting ? (
             <Loader2 className="animate-spin" />
           ) : (
-            "Disconnect Discord"
+            <>
+              <Unplug size={20} className="mr-2" />
+              Disconnect Discord
+            </>
           )}
         </Button>
       ) : (
@@ -135,7 +138,7 @@ export default function DiscordConnect({
               <Loader2 className="animate-spin" />
             ) : (
               <>
-                <Unplug size={20} className="mr-2" />
+                <Link size={20} className="mr-2" />
                 Connect Discord Account
               </>
             )}
