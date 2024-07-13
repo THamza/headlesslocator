@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, Loader2, Unplug } from "lucide-react";
-import { toast } from "./ui/use-toast";
+import { toast } from "../ui/use-toast";
 
 type DiscordConnectProps = {
   email: string;

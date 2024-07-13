@@ -23,16 +23,16 @@ import {
 import { Profile } from "@prisma/client";
 import { toast } from "./ui/use-toast";
 import dynamic from "next/dynamic";
-import { TelegramUsernameTutorial } from "./TelegramUsernameTutorial";
+import { TelegramUsernameTutorial } from "./tutorials/TelegramUsernameTutorial";
 import { Separator } from "./ui/separator";
 import { debounce } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { MAX_RADIUS_RANGE } from "../lib/constants";
-// import { DiscordIDTutorial } from "./DiscordIDTutorial";
-import DiscordConnect from "./DiscordConnect";
+// import { DiscordIDTutorial } from "./tutorials/DiscordIDTutorial";
+import DiscordConnect from "./utils/DiscordConnect";
 
-const LeafletMap = dynamic(() => import("./LeafletMap"), {
+const LeafletMap = dynamic(() => import("./utils/LeafletMap"), {
   ssr: false,
 });
 

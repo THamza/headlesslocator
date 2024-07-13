@@ -1,13 +1,13 @@
 "use client";
 import dynamic from "next/dynamic";
-import Header from "@/components/Header";
+import Header from "@/components/layout/Header";
 import { useUser } from "@clerk/clerk-react";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Profile } from "@prisma/client";
 import ProfileEdit from "@/components/ProfileEdit";
-import { Footer } from "@/components/footer";
+import { Footer } from "@/components/layout/footer";
 
 // Dynamically import the ProfileEdit component
 // const ProfileEdit = dynamic(() => import("@/components/ProfileEdit"), {

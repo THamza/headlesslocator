@@ -3,8 +3,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { JSX, SVGProps, useState, useEffect } from "react";
-import Header from "@/components/Header";
-import { Footer } from "@/components/footer";
+import Header from "@/components/layout/Header";
+import { Footer } from "@/components/layout/footer";
 
 const BG_IMAGES = ["bg3.webp", "bg.jpeg", "bg2.webp"];
 
